@@ -124,22 +124,26 @@
   .plat button.on{background:#fff;color:var(--tx);box-shadow:var(--sh)}
   .masonry{columns:4;column-gap:16px}
   @media(max-width:1250px){.masonry{columns:3}}@media(max-width:820px){.masonry{columns:2}}@media(max-width:520px){.masonry{columns:1}}
-  .adc{break-inside:avoid;margin-bottom:16px;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--sh);background:#fff}
-  .adc .sub{display:flex;align-items:center;justify-content:space-between;padding:10px 12px 6px}
-  .adc .dr{font-size:11.5px;color:var(--mut)}.adc .dr b{color:var(--tx)}
-  .adc .badges{display:flex;gap:6px}
-  .adc .bd{font-family:var(--mono);font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:6px;background:var(--soft);color:var(--mut)}
-  .adc .bd.live{color:var(--gn)}.adc .bd.dup{color:var(--blue);background:var(--blue-bg)}
-  .adc .adv{display:flex;align-items:center;gap:9px;padding:2px 12px 10px}
+  .adc{break-inside:avoid;margin-bottom:16px;border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:var(--sh);background:#fff;cursor:pointer;transition:.16s}
+  .adc:hover{transform:translateY(-3px);box-shadow:var(--sh2);border-color:var(--line2)}
+  .adc .media{position:relative;aspect-ratio:4/5;background:#0b0b0e;overflow:hidden}
+  .adc .media img{width:100%;height:100%;object-fit:cover;display:block}
+  .adc .media .scrim{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.30) 0%,transparent 24%,transparent 62%,rgba(0,0,0,.46) 100%);pointer-events:none}
+  .adc .media .pl{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
+  .adc .media .pl span{width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.95);display:grid;place-items:center;color:#111;font-size:17px;box-shadow:0 6px 20px rgba(0,0,0,.4);transition:.15s}
+  .adc:hover .media .pl span{transform:scale(1.1)}
+  .adc .mtop{position:absolute;top:9px;left:9px;right:9px;display:flex;justify-content:space-between;align-items:flex-start;gap:6px;pointer-events:none}
+  .adc .bd{font-family:var(--mono);font-size:10px;font-weight:700;padding:3px 7px;border-radius:6px;background:rgba(255,255,255,.94);color:var(--tx);box-shadow:var(--sh)}
+  .adc .bd.live{color:var(--gn)}.adc .bd.dup{color:var(--blue)}
+  .adc .fmt{position:absolute;bottom:9px;left:9px;font-family:var(--mono);font-size:10px;font-weight:700;color:#fff;background:rgba(0,0,0,.5);border-radius:6px;padding:2px 7px}
+  .adc .adbody{padding:12px}
+  .adc .adv{display:flex;align-items:center;gap:9px;margin-bottom:8px}
   .adc .adv .pf{width:30px;height:30px;border-radius:8px;overflow:hidden;border:1px solid var(--line);background:var(--soft);flex:0 0 30px;display:grid;place-items:center;font-size:11px;font-weight:800;color:var(--blue)}
   .adc .adv .pf img{width:30px;height:30px;object-fit:cover}
-  .adc .adv .nm{font-weight:750;font-size:13.5px;line-height:1.15}.adc .adv .sm{font-size:11px;color:var(--mut)}
-  .adc .copy{padding:0 12px 10px;font-size:12.5px;color:var(--tx);line-height:1.45}
-  .adc .media{position:relative;background:var(--soft)}
-  .adc .media img{width:100%;object-fit:cover;display:block}
-  .adc .media .pl{position:absolute;inset:0;display:grid;place-items:center}
-  .adc .media .pl span{width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.92);display:grid;place-items:center;color:var(--tx);font-size:15px;box-shadow:var(--sh)}
-  .adc .cta{margin:0 12px 12px;text-align:center;font-size:12px;font-weight:700;color:var(--blue);background:var(--blue-bg);border-radius:9px;padding:8px}
+  .adc .adv .nm{font-weight:800;font-size:14px;line-height:1.15;color:var(--tx)}.adc .adv .sm{font-size:11px;color:var(--mut)}
+  .adc .copy{font-size:12.5px;color:var(--mut);line-height:1.5;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .adc .cta{margin-top:10px;text-align:center;font-size:12px;font-weight:700;color:var(--blue);background:var(--blue-bg);border-radius:9px;padding:8px}
+  .adc .noimg{position:absolute;inset:0;display:grid;place-items:center;color:#666;font-size:30px}
 
   .back{display:inline-flex;gap:7px;align-items:center;color:var(--mut);font-size:14px;cursor:pointer;margin:2px 0 18px;font-weight:600}.back:hover{color:var(--blue)}
   .shead{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
@@ -210,7 +214,7 @@
       <a class="soon"><span class="i">✉️</span> Emails <span class="tag s">soon</span></a>
     </div>
     <div class="cta">⚡ Choisir un plan</div>
-    <div style="font-size:10px;color:var(--side-mut);padding:2px 10px 6px;font-family:var(--mono)">build 2507·4 — ads playables</div>
+    <div style="font-size:10px;color:var(--side-mut);padding:2px 10px 6px;font-family:var(--mono)">build 2507·5 — polish</div>
     <div class="side-foot"><span class="av">H</span><div class="u"><b>heuss</b><span>laibhossame1@gmail.com</span></div></div>
   </aside>
 
@@ -247,7 +251,7 @@ const esc=s=>(s||"").replace(/</g,"&lt;");
 const flag=cc=>(cc&&cc.length===2)?String.fromCodePoint(...[...cc.toUpperCase()].map(c=>127397+c.charCodeAt(0))):"";
 const yearsAgo=y=>y?((2026-parseInt(y))+" ans"):"";
 let DATA=null, VIEW='boutiques';
-const S={search:"",sort:"relevance",cat:null,adSort:"relevance"};
+const S={search:"",sort:"relevance",cat:null,adSort:"relevance",adStatus:"all",adType:"all",adLang:"all"};
 const SORTS={relevance:["Plus pertinent",null],monthlyVisits:["Visites",(a,b)=>b.traffic_number-a.traffic_number],
   activeAds:["Ads actives",(a,b)=>(b.active_ads_total||0)-(a.active_ads_total||0)],
   products:["Produits",(a,b)=>(b.products_count||0)-(a.products_count||0)],
@@ -279,8 +283,13 @@ function initFilters(){
   const shopPills=[["Niche",allCats],["Trafic",["> 1M","> 500k","< 500k"]],["Croissance",["En hausse","Stable"]],["Trustpilot",["4+","3+"]],["Origine",["US","GB","EU"]],["Currency",["USD","EUR","GBP"]]];
   document.getElementById('filters').innerHTML=shopPills.map((p,i)=>`<div class="fwrap"><div class="fpill" id="fp${i}" onclick="toggleMenu('f${i}',this)">${p[0]} <span class="c">▾</span></div></div>`).join('');
   window._pills=shopPills;
-  const adPills=["Statut","Type média","CTA","Pays","Jours actifs","Duplicatas","Langue","Niche"];
-  document.getElementById('filtersAds').innerHTML=adPills.map(f=>`<div class="fpill">${f} <span class="c">▾</span></div>`).join('');
+  const langs=[...new Set((DATA.ads||[]).map(a=>(a.language||'').toLowerCase()).filter(Boolean))].sort();
+  window._adPills=[
+    ["Statut",[["all","Tous"],["active","Actives"],["inactive","Inactives"]],"adStatus"],
+    ["Type média",[["all","Tous"],["video","Vidéo"],["image","Image"]],"adType"],
+    ["Langue",[["all","Toutes"]].concat(langs.map(l=>[l,cap(l)])),"adLang"],
+  ];
+  document.getElementById('filtersAds').innerHTML=window._adPills.map((p,i)=>`<div class="fwrap"><div class="fpill" id="afp${i}" onclick="toggleMenu('af${i}',this)">${p[0]} <span class="c">▾</span></div></div>`).join('');
 }
 let openMenu=null;
 function closeMenus(){document.querySelectorAll('.menu').forEach(m=>m.remove());openMenu=null;}
@@ -290,9 +299,12 @@ function toggleMenu(id,el){
   let items=[];
   if(id==='sort') items=Object.entries(SORTS).map(([k,v])=>[k,v[0],()=>{S.sort=k;document.getElementById('sortLabel').textContent=v[0];syncQtab();renderShops();}]);
   else if(id==='sortAds') items=Object.entries(ADSORTS).map(([k,v])=>[k,v[0],()=>{S.adSort=k;document.getElementById('sortLabelAds').textContent=v[0];renderAds();}]);
+  else if(id.startsWith('af')){const idx=+id.slice(2);const p=window._adPills[idx];
+    items=p[1].map(([k,l])=>[k,l,()=>{S[p[2]]=k;el.classList.toggle('act',k!=='all');renderAds();}]);}
   else if(id.startsWith('f')){const idx=+id.slice(1);const p=window._pills[idx];
     items=[["__all","Tous",()=>{if(p[0]==='Niche')S.cat=null;el.classList.remove('act');renderShops();}]].concat(p[1].map(v=>[v,v,()=>{if(p[0]==='Niche'){S.cat=v;el.classList.add('act');renderShops();}else{el.classList.add('act');}}]));}
-  m.innerHTML=items.map(([k,l])=>`<div data-k="${k}" class="${(id==='sort'&&k===S.sort)||(id==='sortAds'&&k===S.adSort)||(id==='f0'&&k===S.cat)?'on':''}">${l}</div>`).join('');
+  const asel=id.startsWith('af')&&window._adPills?S[window._adPills[+id.slice(2)][2]]:null;
+  m.innerHTML=items.map(([k,l])=>`<div data-k="${k}" class="${(id==='sort'&&k===S.sort)||(id==='sortAds'&&k===S.adSort)||(id==='f0'&&k===S.cat)||(asel!=null&&k===asel)?'on':''}">${l}</div>`).join('');
   el.parentElement.appendChild(m);
   m.querySelectorAll('div').forEach((d,i)=>d.onclick=(e)=>{e.stopPropagation();items[i][2]();closeMenus();});
 }
@@ -344,6 +356,9 @@ function renderShops(){
 function filteredAds(){
   let a=(DATA.ads||[]).slice();
   if(S.search) a=a.filter(x=>((x.body||"")+" "+(x.page_name||"")).toLowerCase().includes(S.search));
+  if(S.adStatus!=='all') a=a.filter(x=>S.adStatus==='active'?x.is_active:!x.is_active);
+  if(S.adType!=='all') a=a.filter(x=>x.media_type===S.adType);
+  if(S.adLang!=='all') a=a.filter(x=>(x.language||'').toLowerCase()===S.adLang);
   const f=ADSORTS[S.adSort][1]; if(f) a.sort(f);
   return a;
 }
@@ -355,13 +370,20 @@ function renderAds(){
 }
 function adCard(a,click=''){
   const dup=a.collation_count>1?`<span class="bd dup">⧉ ${a.collation_count}</span>`:'';
+  const isV=a.media_type==='video';
   return `<div class="adc" ${click}>
-    <div class="sub"><div class="dr"><b>${a.days_running!=null?a.days_running+'j':''}</b>${a.start_date?' · '+a.start_date:''}</div>
-      <div class="badges">${dup}<span class="bd ${a.is_active?'live':''}">${a.is_active?'● active':'inactive'}</span></div></div>
-    <div class="adv"><span class="pf" data-i="${esc((a.page_name||'?').slice(0,1))}">${a.avatar?`<img src="${a.avatar}" onerror="this.parentElement.textContent=this.parentElement.dataset.i">`:esc((a.page_name||'?').slice(0,1))}</span><div><div class="nm">${esc(a.page_name||'')}</div><div class="sm">${a.media_type||''}${a.is_eu?' · EU':''}</div></div></div>
-    <div class="copy">${esc(a.body)||''}</div>
-    <div class="media">${a.thumb?`<img src="${a.thumb}" loading="lazy">${a.media_type==='video'?'<div class="pl"><span>▶</span></div>':''}`:`<div class="noimg" style="aspect-ratio:1;display:grid;place-items:center;color:var(--dim);font-size:28px">${a.media_type==='video'?'▶':'▦'}</div>`}</div>
-    ${a.cta?`<div class="cta">${esc(a.cta)}</div>`:''}
+    <div class="media">
+      ${a.thumb?`<img src="${a.thumb}" loading="lazy">`:`<div class="noimg">${isV?'▶':'▦'}</div>`}
+      <div class="scrim"></div>
+      <div class="mtop"><span class="bd ${a.is_active?'live':''}">${a.is_active?'● active':'inactive'}</span>${dup}</div>
+      ${isV?'<div class="pl"><span>▶</span></div>':''}
+      <span class="fmt">${isV?'VIDÉO':'IMAGE'}${a.start_date?' · '+a.start_date.slice(5):''}</span>
+    </div>
+    <div class="adbody">
+      <div class="adv"><span class="pf" data-i="${esc((a.page_name||'?').slice(0,1))}">${a.avatar?`<img src="${a.avatar}" onerror="this.parentElement.textContent=this.parentElement.dataset.i">`:esc((a.page_name||'?').slice(0,1))}</span><div><div class="nm">${esc(a.page_name||'')}</div><div class="sm">${a.days_running!=null?a.days_running+'j actifs':''}${a.is_eu?' · EU':''}</div></div></div>
+      ${a.body?`<div class="copy">${esc(a.body)}</div>`:''}
+      ${a.cta?`<div class="cta">${esc(a.cta)} ↗</div>`:''}
+    </div>
   </div>`;
 }
 function openAd(i){showAdModal(window.ADS[i]);}
@@ -372,9 +394,14 @@ function showAdModal(a){
   const m=document.getElementById('adModal');
   const media=a.video?`<video src="${a.video}" controls autoplay muted loop playsinline poster="${a.thumb||''}"></video>`
     :`<img src="${a.full||a.thumb||''}">`;
-  const rows=[["Mise en ligne",a.start_date||'—'],["Jours actifs",a.days_running!=null?a.days_running+' j':'—'],
-    ["Dernière activité",a.end_date||(a.is_active?'En cours':'—')],["Variantes",a.collation_count?'×'+a.collation_count:'—'],
-    ["Langue",a.language?cap(a.language):'—'],["Format",a.media_type==='video'?'Vidéo':'Image']];
+  const rows=[];
+  if(a.start_date) rows.push(["Mise en ligne",a.start_date]);
+  if(a.days_running!=null) rows.push(["Jours actifs",a.days_running+' j']);
+  if(a.end_date||a.is_active) rows.push(["Dernière activité",a.end_date||'En cours']);
+  if(a.collation_count>1) rows.push(["Variantes","×"+a.collation_count]);
+  if(a.language) rows.push(["Langue",cap(a.language)]);
+  rows.push(["Format",a.media_type==='video'?'Vidéo':'Image']);
+  const showLanding=a.landing_url && a.landing_url!==a.cta_link;
   m.innerHTML=`<div class="modal-panel">
     <div class="modal-media"><button class="modal-x" onclick="closeAd()">✕</button>${media}</div>
     <div class="modal-info">
@@ -382,7 +409,7 @@ function showAdModal(a){
         <div><div class="nm">${esc(a.page_name||'Annonceur')}</div><div class="st ${a.is_active?'live':'off'}">${a.is_active?'● Publicité active':'Inactive'}</div></div></div>
       <div class="mstats">${rows.map(([l,v])=>`<div class="mstat"><div class="l">${l}</div><div class="v">${v}</div></div>`).join('')}</div>
       ${a.body?`<div class="mi-copy">${esc(a.body)}</div>`:''}
-      <div class="mi-actions">${a.cta_link?`<a class="mi-btn primary" href="${a.cta_link}" target="_blank" rel="noopener">${esc(a.cta||"Voir l'offre")} ↗</a>`:(a.cta?`<span class="mi-btn primary">${esc(a.cta)}</span>`:'')}${a.landing_url?`<a class="mi-btn ghost" href="${a.landing_url}" target="_blank" rel="noopener">Landing page ↗</a>`:''}</div>
+      <div class="mi-actions">${a.cta_link?`<a class="mi-btn primary" href="${a.cta_link}" target="_blank" rel="noopener">${esc(a.cta||"Voir l'offre")} ↗</a>`:(a.cta?`<span class="mi-btn primary">${esc(a.cta)}</span>`:'')}${showLanding?`<a class="mi-btn ghost" href="${a.landing_url}" target="_blank" rel="noopener">Landing page ↗</a>`:''}</div>
     </div></div>`;
   m.classList.remove('hidden');document.body.style.overflow='hidden';
 }
