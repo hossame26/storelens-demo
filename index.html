@@ -204,6 +204,14 @@
   .mi-btn{flex:1;text-align:center;padding:11px;border-radius:11px;font-weight:700;font-size:13.5px;cursor:pointer;text-decoration:none}
   .mi-btn.primary{background:var(--blue);color:#fff}.mi-btn.ghost{background:var(--soft);color:var(--tx);border:1px solid var(--line)}
   .modal-x{position:absolute;top:14px;right:14px;z-index:5;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.92);border:none;font-size:17px;cursor:pointer;box-shadow:var(--sh);display:grid;place-items:center}
+  .lookup-load{display:flex;flex-direction:column;align-items:center;gap:16px;padding:80px 20px;color:var(--mut);text-align:center;font-size:15px}
+  .spin{width:40px;height:40px;border:3px solid var(--line);border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .lk-hero{display:grid;grid-template-columns:1.25fr 1fr;gap:18px}
+  @media(max-width:820px){.lk-hero{grid-template-columns:1fr}}
+  .lk-shot{border-radius:16px;overflow:hidden;border:1px solid var(--line);box-shadow:var(--sh);background:var(--soft);aspect-ratio:16/10}
+  .lk-shot img{width:100%;height:100%;object-fit:cover;object-position:top}
+  .lk-meta{display:flex;flex-direction:column;justify-content:center}
 </style>
 </head>
 <body>
@@ -220,7 +228,7 @@
       <a class="soon"><span class="i">✉️</span> Emails <span class="tag s">soon</span></a>
     </div>
     <div class="cta">⚡ Choisir un plan</div>
-    <div style="font-size:10px;color:var(--side-mut);padding:2px 10px 6px;font-family:var(--mono)">build 2507·7 — final</div>
+    <div style="font-size:10px;color:var(--side-mut);padding:2px 10px 6px;font-family:var(--mono)">build 2507·8 — live search</div>
     <div class="side-foot"><span class="av">H</span><div class="u"><b>heuss</b><span>laibhossame1@gmail.com</span></div></div>
   </aside>
 
@@ -228,7 +236,7 @@
     <div class="hd">
       <h1 id="hdTitle">Boutiques</h1>
       <span class="count" id="hdCount">1.9M</span>
-      <div class="searchbox">🔎 <input id="searchInput" placeholder="Rechercher une boutique, un domaine, une pub…" oninput="onSearch(this.value)"></div>
+      <div class="searchbox">🔎 <input id="searchInput" placeholder="Tape un domaine (ex. gymshark.com) + Entrée → analyse Shopify live" oninput="onSearch(this.value)" onkeydown="if(event.key==='Enter')doLookup(this.value)"></div>
     </div>
     <div class="content">
       <div id="view-boutiques">
@@ -264,6 +272,7 @@ const esc=s=>(s||"").replace(/</g,"&lt;");
 const flag=cc=>(cc&&cc.length===2)?String.fromCodePoint(...[...cc.toUpperCase()].map(c=>127397+c.charCodeAt(0))):"";
 const yearsAgo=y=>y?((2026-parseInt(y))+" ans"):"";
 let DATA=null, VIEW='boutiques';
+const API_BASE="https://storelens-api.vercel.app";
 const S={search:"",sort:"relevance",cat:null,adSort:"relevance",adStatus:"all",adType:"all",adLang:"all"};
 const SORTS={relevance:["Plus pertinent",null],monthlyVisits:["Visites",(a,b)=>b.traffic_number-a.traffic_number],
   activeAds:["Ads actives",(a,b)=>(b.active_ads_total||0)-(a.active_ads_total||0)],
@@ -446,6 +455,51 @@ function showAdModal(a){
 function closeAd(){const m=document.getElementById('adModal');m.classList.add('hidden');m.innerHTML='';document.body.style.overflow='';}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeAd();});
 
+/* ===== LIVE LOOKUP: type any domain → detect Shopify via backend API ===== */
+function doLookup(raw){
+  const domain=(raw||'').trim().toLowerCase().replace(/^https?:\/\//,'').replace(/\/.*$/,'').replace(/\s/g,'');
+  if(!domain.includes('.')) return; // not a domain — live table filter already applies
+  document.getElementById('searchInput').blur();
+  go('detail');
+  document.getElementById('view-detail').innerHTML=`<div class="back" onclick="go('boutiques')">← toutes les boutiques</div>
+    <div class="lookup-load"><div class="spin"></div><div>Analyse de <b>${esc(domain)}</b> — détection Shopify + catalogue…</div></div>`;
+  fetch(API_BASE+'/api/lookup?domain='+encodeURIComponent(domain),{cache:'no-store'})
+    .then(r=>r.json()).then(d=>renderLookup(d,domain)).catch(()=>renderLookup({found:false,error:'network'},domain));
+}
+function renderLookup(d,domain){
+  const det=document.getElementById('view-detail');
+  if(!d||!d.is_shopify){
+    det.innerHTML=`<div class="back" onclick="go('boutiques')">← toutes les boutiques</div>
+      <div class="soon-panel"><div class="ico">🔍</div><h3>${esc(domain)}</h3>
+      <p>${d&&d.error?'Erreur réseau — réessaie dans un instant.':"Ce site n'est pas détecté comme Shopify (pas de catalogue <code>/products.json</code> public)."}</p>
+      <button class="mi-btn primary" style="max-width:250px" onclick="go('boutiques');setTimeout(()=>document.getElementById('searchInput').focus(),50)">← Chercher un autre site</button></div>`;
+    return;
+  }
+  const months=d.launches_per_month||{}, prods=d.newest||d.catalog||[];
+  det.innerHTML=`
+    <div class="back" onclick="go('boutiques')">← toutes les boutiques</div>
+    <div class="lk-hero">
+      <div class="lk-shot">${d.screenshot_url?`<img src="${d.screenshot_url}" loading="lazy" onerror="this.parentElement.style.display='none'">`:''}</div>
+      <div class="lk-meta">
+        <div class="shead" style="margin-bottom:14px"><div class="fav">${d.favicon?`<img src="${d.favicon}" onerror="this.replaceWith(document.createTextNode('${esc((d.name||'?').slice(0,2))}'))">`:esc((d.name||'?').slice(0,2))}</div>
+          <div><h1>${esc(d.name)}</h1><div class="chips">
+            <span class="chip mono">${esc(d.domain)}</span>
+            <span class="chip live">✓ Shopify confirmé</span>
+            ${d.launch_year?`<span class="chip">depuis ${d.launch_year}</span>`:''}
+            ${(d.top_types||[]).slice(0,2).map(t=>t?`<span class="chip">${esc(t)}</span>`:'').join('')}
+          </div></div></div>
+        <div class="kpirow" style="grid-template-columns:1fr 1fr;margin-bottom:0">
+          <div class="stat"><div class="v b">${fmt(d.products_count)}${d.has_more?'+':''}</div><div class="l">produits</div></div>
+          <div class="stat"><div class="v">${d.launch_year||'—'}</div><div class="l">en ligne depuis</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:16px"><h2>🚀 Lancements produits / mois</h2>${Object.keys(months).length?bars(lastMonths(months,12)):'<p class="mut" style="font-size:13.5px">Historique indisponible.</p>'}</div>
+    <div class="section-t">📦 Derniers produits mis en ligne</div>
+    <div class="prods">${prods.map(p=>`<div class="prod"><div class="ph">${p.image?`<img src="${p.image}" loading="lazy">`:''}</div><div class="t">${esc(p.title)}</div><div class="p">${p.price?Math.round(p.price)+'$':''}</div></div>`).join('')}</div>`;
+  window.scrollTo(0,0);
+}
+
 function showStore(i){
   const s=DATA.stores[i];go('detail');window.CURSTORE=s;window.CREAS=s.creas||[];
   const spark=(s.ads_hist&&s.ads_hist.length>1)?s.ads_hist:(s.traffic_hist||[]);
@@ -478,6 +532,7 @@ function showStore(i){
     <div data-p="pr" class="hidden"><div class="section-t">📦 Best-sellers</div><div class="prods">${(s.products||[]).map(p=>`<div class="prod"><div class="ph">${p.image?`<img src="${p.image}" loading="lazy">`:''}</div><div class="t">${esc(p.title)}</div><div class="p">${p.price?Math.round(p.price)+(s.currency==='EUR'?'€':'$'):''}</div></div>`).join('')}</div></div>`;
 }
 function tab(b){const r=document.getElementById('view-detail');r.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));r.querySelectorAll('[data-p]').forEach(p=>p.classList.toggle('hidden',p.getAttribute('data-p')!==b.dataset.t));window.scrollTo(0,0);}
+function lastMonths(o,n){const k=Object.keys(o||{}).sort().slice(-n),x={};k.forEach(m=>x[m.slice(2)]=o[m]);return x;}
 function bars(o,fl){const e=Object.entries(o||{}).sort((a,b)=>b[1]-a[1]).slice(0,8),mx=Math.max(...e.map(x=>x[1]),1);
   return `<div class="bars">${e.map(([k,v])=>`<div class="bar"><span class="mono dim">${fl?fl(k)+' '+k:k}</span><span class="track"><span class="fill" style="width:${Math.max(5,100*v/mx)}%"></span></span><span class="n">${fmt(v)}</span></div>`).join('')}</div>`;}
 function bigLine(vals){const W=560,H=150,pad=10,mn=Math.min(...vals),mx=Math.max(...vals);
