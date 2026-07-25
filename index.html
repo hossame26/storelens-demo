@@ -212,6 +212,15 @@
   .lk-shot{border-radius:16px;overflow:hidden;border:1px solid var(--line);box-shadow:var(--sh);background:var(--soft);aspect-ratio:16/10}
   .lk-shot img{width:100%;height:100%;object-fit:cover;object-position:top}
   .lk-meta{display:flex;flex-direction:column;justify-content:center}
+  .chart-head{display:flex;justify-content:space-between;align-items:center;gap:10px}
+  .rtoggle{display:flex;gap:2px;background:var(--soft);border:1px solid var(--line);border-radius:9px;padding:2px}
+  .rtoggle button{border:none;background:none;font-size:11px;font-weight:700;color:var(--mut);padding:5px 11px;border-radius:7px;cursor:pointer;font-family:inherit}
+  .rtoggle button.on{background:#fff;color:var(--tx);box-shadow:var(--sh)}
+  .bchart{width:100%;height:168px;margin-top:10px}.bchart .cx{font-family:var(--mono);font-size:10px;fill:var(--dim)}
+  .crow{display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding-top:12px;border-top:1px solid var(--line);flex-wrap:wrap;gap:8px}
+  .crow-t{font-size:12px;color:var(--mut);font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+  .crow-f{display:flex;gap:14px;font-size:13px;font-weight:700}
+  .tabs button.soon-tab{opacity:.4;cursor:default} .tabs button b{font-size:12px;font-weight:800;margin-left:2px}
 </style>
 </head>
 <body>
@@ -228,7 +237,7 @@
       <a class="soon"><span class="i">✉️</span> Emails <span class="tag s">soon</span></a>
     </div>
     <div class="cta">⚡ Choisir un plan</div>
-    <div style="font-size:10px;color:var(--side-mut);padding:2px 10px 6px;font-family:var(--mono)">build 2507·8 — live search</div>
+    <div style="font-size:10px;color:var(--side-mut);padding:2px 10px 6px;font-family:var(--mono)">build 2507·9 — shop analytics</div>
     <div class="side-foot"><span class="av">H</span><div class="u"><b>heuss</b><span>laibhossame1@gmail.com</span></div></div>
   </aside>
 
@@ -356,9 +365,9 @@ function renderShops(){
   document.getElementById('shopTable').classList.toggle('hidden',list.length===0);
   const rows=list.map(s=>{
     const idx=DATA.stores.indexOf(s);
-    const fl=(s.countries&&s.countries.length?s.countries:[s.main_market]).slice(0,3).map(flag).join(' ');
+    const fl=((s.visitor_countries&&s.visitor_countries.length?s.visitor_countries.map(x=>x.cc):[s.main_market])).slice(0,3).map(flag).join(' ');
     const bs=(s.products||[]).slice(0,3).map(p=>`<div class="p">${p.image?`<img src="${p.image}" loading="lazy">`:''}</div>`).join('');
-    const creas=(s.creas||[]).slice(0,2).map(a=>`<div class="cr">${a.thumb?`<img src="${a.thumb}" loading="lazy">`:''}<div class="pl">${a.media_type==='video'?'▶':''}</div></div>`).join('')||'<span class="dim" style="font-size:11px">—</span>';
+    const creas=(s.ads||[]).slice(0,2).map(a=>`<div class="cr">${a.thumb?`<img src="${a.thumb}" loading="lazy">`:''}<div class="pl">${a.media_type==='video'?'▶':''}</div></div>`).join('')||'<span class="dim" style="font-size:11px">—</span>';
     const g=s.growth_ads_7d; const gr=g!=null?`<span class="grow ${g>=0?'up':'dn'}">${g>=0?'▲':'▼'}${Math.abs(Math.round(g*100))}%</span>`:'';
     const tp=s.trustpilot_score?`<span class="tp">★ ${s.trustpilot_score}</span>`:'';
     return `<div class="trow" onclick="showStore(${idx})">
@@ -368,8 +377,8 @@ function renderShops(){
           <div class="meta">🗓 ${s.creation_date||''} · ${yearsAgo(s.launch_year)} ${flag(s.main_market)} ${tp}</div></div></div>
       <div class="bestsell">${bs}<span class="cnt">📦 ${fmt(s.products_count)}</span></div>
       <div class="cats c-meta">${(s.category||[]).slice(0,2).map(c=>`<span class="cat">${esc(c)}</span>`).join('')}</div>
-      <div class="metric c-meta"><span class="ml">Visites/mois</span><div class="v">${fmt(s.traffic_number)}</div>${miniSpark(s.traffic_hist)}<div class="flags">${fl}</div></div>
-      <div class="metric c-ads"><span class="ml">Meta Ads actives</span><div class="dotv"><span class="dot"></span>${fmt(s.active_ads_total)}${gr}</div>${miniSpark(s.ads_hist)}<div class="flags">${fl}</div></div>
+      <div class="metric c-meta"><span class="ml">Visites/mois</span><div class="v">${fmt(s.traffic_number)}</div>${miniSpark(Object.values(s.traffic_monthly||{}))}<div class="flags">${fl}</div></div>
+      <div class="metric c-ads"><span class="ml">Meta Ads actives</span><div class="dotv"><span class="dot"></span>${fmt(s.active_ads_total)}${gr}</div>${miniSpark(s.ads_weekly)}<div class="flags">${fl}</div></div>
       <div class="creas c-ads">${creas}</div>
     </div>`;
   }).join('');
@@ -501,36 +510,51 @@ function renderLookup(d,domain){
 }
 
 function showStore(i){
-  const s=DATA.stores[i];go('detail');window.CURSTORE=s;window.CREAS=s.creas||[];
-  const spark=(s.ads_hist&&s.ads_hist.length>1)?s.ads_hist:(s.traffic_hist||[]);
-  const hk=(s.ads_hist&&s.ads_hist.length>1);
-  const cs=s.ads_country_stats||{};
+  const s=DATA.stores[i];go('detail');window.CURSTORE=s;window.SIDX=i;window.rTraffic='ALL';window.rAds='ALL';window.ADS=s.ads||[];
+  const chg=s.traffic_change, chgTxt=chg!=null?` <span class="grow ${chg>=0?'up':'dn'}" style="font-size:13px">${chg>=0?'▲':'▼'}${Math.abs(Math.round(chg*100))}%</span>`:'';
+  const adsN=fmt(s.active_ads_total||(s.ads||[]).length);
   document.getElementById('view-detail').innerHTML=`
     <div class="back" onclick="go('boutiques')">← toutes les boutiques</div>
-    <div class="shead"><div class="fav">${s.logo?`<img src="${s.logo}">`:s.name.slice(0,2)}</div>
+    <div class="shead"><div class="fav">${s.logo?`<img src="${s.logo}" onerror="this.parentElement.textContent='${esc(s.name.slice(0,2))}'">`:esc(s.name.slice(0,2))}</div>
       <div><h1>${esc(s.name)}</h1><div class="chips">
         <span class="chip mono">${s.domain}</span>${(s.category||[]).slice(0,2).map(c=>`<span class="chip">${esc(c)}</span>`).join('')}
         ${s.launch_year?`<span class="chip">depuis ${s.launch_year}</span>`:''}<span class="chip">Shopify</span>
-        ${s.trustpilot_score?`<span class="chip">★ ${s.trustpilot_score} (${fmt(s.trustpilot_reviews)})</span>`:''}
-        ${s.active_ads_total?'<span class="chip live">● ad-spy actif</span>':''}</div></div></div>
-    <div class="tabs"><button class="on" data-t="ov" onclick="tab(this)">Vue d'ensemble</button>
-      ${(s.creas||[]).length?'<button data-t="ads" onclick="tab(this)">Publicités Meta</button>':''}
-      ${(s.products||[]).length?'<button data-t="pr" onclick="tab(this)">Produits</button>':''}</div>
+        ${s.trustpilot_score?`<span class="chip">★ ${s.trustpilot_score}</span>`:''}
+        ${s.global_rank?`<span class="chip">rang mondial #${fmt(s.global_rank)}</span>`:''}</div></div></div>
+    <div class="tabs">
+      <button class="on" data-t="ov" onclick="tab(this)">Vue d'ensemble</button>
+      ${(s.ads||[]).length?`<button data-t="ads" onclick="tab(this)">Publicités Meta <b>${adsN}</b></button>`:''}
+      ${(s.products||[]).length?'<button data-t="pr" onclick="tab(this)">Produits</button>':''}
+      <button class="soon-tab" disabled>Shops similaires</button></div>
     <div data-p="ov">
       <div class="kpirow">
-        <div class="stat"><div class="v b">${fmt(s.active_ads_total)}</div><div class="l">ads actives</div></div>
-        <div class="stat"><div class="v g">${fmt(s.traffic_number)}</div><div class="l">visites / mois</div></div>
+        <div class="stat"><div class="v g">${fmt(s.traffic_number)}${chgTxt}</div><div class="l">visites / mois</div></div>
+        <div class="stat"><div class="v b">${adsN}</div><div class="l">ads actives</div></div>
         <div class="stat"><div class="v">${fmt(s.products_count)}</div><div class="l">produits</div></div>
-        <div class="stat"><div class="v">${s.main_market||'—'} ${flag(s.main_market)}</div><div class="l">marché principal</div></div>
+        <div class="stat"><div class="v">${s.trustpilot_score?'★ '+s.trustpilot_score:'—'}</div><div class="l">Trustpilot${s.trustpilot_reviews?' · '+fmt(s.trustpilot_reviews)+' avis':''}</div></div>
       </div>
       <div class="cols">
-        <div class="card"><div style="display:flex;justify-content:space-between"><h2>${hk?'📈 Ads actives / semaine':'📈 Trafic / mois'}</h2><span class="dim mono" style="font-size:12px">${hk?'signal de scaling':'visites'}</span></div>${spark.length>1?bigLine(spark):'<p class="mut">Pas assez d\'historique.</p>'}</div>
-        ${Object.keys(cs).length?`<div class="card"><h2>🌍 Ads par pays</h2>${bars(cs,flag)}</div>`:`<div class="card"><h2>🏷️ Infos</h2><p class="mut" style="font-size:13.5px">${(s.category||[]).join(', ')} · ${fmt(s.products_count)} produits · marché ${s.main_market}. ${s.trustpilot_score?'Trustpilot '+s.trustpilot_score+'/5.':''}</p></div>`}
+        <div class="card"><div class="chart-head"><h2>📈 Trafic dans le temps</h2>${rangeToggle('traffic')}</div><div id="chart-traffic">${trafficChart(s)}</div>${countryRow('Pays visiteurs',s.visitor_countries)}</div>
+        <div class="card"><div class="chart-head"><h2>🎯 Ads actives dans le temps</h2>${rangeToggle('ads')}</div><div id="chart-ads">${adsChart(s)}</div>${countryRow('Pays ciblés',targetedShares(s.targeted_countries))}</div>
       </div>
     </div>
-    ${(s.creas||[]).length?`<div data-p="ads" class="hidden"><div class="section-t">🎯 Dernières publicités Meta</div><div class="masonry">${(s.creas||[]).map((a,ci)=>`<div class="adc" onclick="openCrea(${ci})"><div class="adv"><span class="pf" data-i="${esc(s.name.slice(0,1))}">${s.logo?`<img src="${s.logo}" onerror="this.parentElement.textContent=this.parentElement.dataset.i">`:esc(s.name.slice(0,1))}</span><div><div class="nm">${esc(s.name)}</div><div class="sm">${a.media_type==='video'?'Vidéo':'Image'}</div></div></div><div class="media"><img src="${a.thumb}" loading="lazy">${a.media_type==='video'?'<div class="pl"><span>▶</span></div>':''}</div></div>`).join('')}</div></div>`:''}
+    <div data-p="ads" class="hidden">${(s.ads||[]).length?`<div class="section-t">🎯 ${adsN} publicités Meta — ${esc(s.name)}</div><div class="masonry">${s.ads.map((a,ai)=>adCard(a,`onclick="openAd(${ai})"`)).join('')}</div>`:''}</div>
     <div data-p="pr" class="hidden"><div class="section-t">📦 Best-sellers</div><div class="prods">${(s.products||[]).map(p=>`<div class="prod"><div class="ph">${p.image?`<img src="${p.image}" loading="lazy">`:''}</div><div class="t">${esc(p.title)}</div><div class="p">${p.price?Math.round(p.price)+(s.currency==='EUR'?'€':'$'):''}</div></div>`).join('')}</div></div>`;
+  window.scrollTo(0,0);
 }
+function rangeToggle(w){const cur=w==='traffic'?window.rTraffic:window.rAds;return `<div class="rtoggle">${['3M','6M','ALL'].map(r=>`<button class="${r===cur?'on':''}" onclick="setRange('${w}','${r}',this)">${r}</button>`).join('')}</div>`;}
+function setRange(w,r,btn){if(w==='traffic'){window.rTraffic=r;document.getElementById('chart-traffic').innerHTML=trafficChart(window.CURSTORE);}else{window.rAds=r;document.getElementById('chart-ads').innerHTML=adsChart(window.CURSTORE);}btn.parentElement.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b===btn));}
+function winMonths(o,r){const ks=Object.keys(o||{}).sort();const n=r==='3M'?3:r==='6M'?6:ks.length;return ks.slice(-n).map(k=>[k.slice(2),o[k]]);}
+function winDaily(a,r){const n=r==='3M'?90:r==='6M'?180:(a||[]).length;return (a||[]).slice(-n);}
+function trafficChart(s){const d=winMonths(s.traffic_monthly,window.rTraffic);if(d.length<2)return '<p class="mut" style="font-size:13px;padding:26px 0;text-align:center">Historique trafic indisponible.</p>';return areaSVG(d.map(x=>x[1]),d.map(x=>x[0]),'#18b45f');}
+function adsChart(s){const d=winDaily(s.ads_daily,window.rAds);if(d.length<2)return '<p class="mut" style="font-size:13px;padding:26px 0;text-align:center">Historique ads indisponible.</p>';return areaSVG(d.map(x=>x[1]),[d[0][0],d[d.length-1][0]],'#2f6bff');}
+function areaSVG(vals,labels,color){const W=560,H=168,pad=10,mn=Math.min(...vals),mx=Math.max(...vals);
+  const x=i=>pad+i*(W-2*pad)/(vals.length-1),y=v=>H-22-(v-mn)/((mx-mn)||1)*(H-42);
+  let d="M"+x(0).toFixed(1)+" "+y(vals[0]).toFixed(1);vals.forEach((v,i)=>{if(i)d+=" L"+x(i).toFixed(1)+" "+y(v).toFixed(1);});
+  const gid='g'+color.slice(1);
+  return `<svg class="bchart" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none"><defs><linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${color}" stop-opacity=".22"/><stop offset="1" stop-color="${color}" stop-opacity="0"/></linearGradient></defs><path d="${d} L${x(vals.length-1)} ${H-22} L${x(0)} ${H-22} Z" fill="url(#${gid})"/><path d="${d}" fill="none" stroke="${color}" stroke-width="2"/><text class="cx" x="${pad}" y="13">max ${fmt(mx)}</text><text class="cx" x="${pad}" y="${H-6}">${labels[0]||''}</text><text class="cx" x="${W-pad}" y="${H-6}" text-anchor="end">${labels[labels.length-1]||''}</text></svg>`;}
+function countryRow(t,list){if(!list||!list.length)return '';return `<div class="crow"><span class="crow-t">${t}</span><div class="crow-f">${list.slice(0,6).map(x=>`<span>${flag(x.cc)} ${Math.round((x.share||0)*100)}%</span>`).join('')}</div></div>`;}
+function targetedShares(t){const e=Object.entries(t||{});const tot=e.reduce((a,[,v])=>a+v,0)||1;return e.sort((a,b)=>b[1]-a[1]).slice(0,6).map(([cc,v])=>({cc,share:v/tot}));}
 function tab(b){const r=document.getElementById('view-detail');r.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));r.querySelectorAll('[data-p]').forEach(p=>p.classList.toggle('hidden',p.getAttribute('data-p')!==b.dataset.t));window.scrollTo(0,0);}
 function lastMonths(o,n){const k=Object.keys(o||{}).sort().slice(-n),x={};k.forEach(m=>x[m.slice(2)]=o[m]);return x;}
 function bars(o,fl){const e=Object.entries(o||{}).sort((a,b)=>b[1]-a[1]).slice(0,8),mx=Math.max(...e.map(x=>x[1]),1);
