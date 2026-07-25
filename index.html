@@ -220,7 +220,7 @@
       <a class="soon"><span class="i">✉️</span> Emails <span class="tag s">soon</span></a>
     </div>
     <div class="cta">⚡ Choisir un plan</div>
-    <div style="font-size:10px;color:var(--side-mut);padding:2px 10px 6px;font-family:var(--mono)">build 2507·6 — platforms</div>
+    <div style="font-size:10px;color:var(--side-mut);padding:2px 10px 6px;font-family:var(--mono)">build 2507·7 — final</div>
     <div class="side-foot"><span class="av">H</span><div class="u"><b>heuss</b><span>laibhossame1@gmail.com</span></div></div>
   </aside>
 
@@ -413,7 +413,10 @@ function setPlatform(p){
   }
 }
 function openAd(i){showAdModal(window.ADS[i]);}
-function openCrea(i){const c=window.CREAS[i],s=window.CURSTORE;showAdModal({page_name:s.name,avatar:s.logo,video:c.video,full:c.full,thumb:c.thumb,media_type:c.media_type,is_active:true,body:'',start_date:null,days_running:null});}
+function openCrea(i){const c=window.CREAS[i],s=window.CURSTORE;showAdModal({page_name:s.name,avatar:s.logo,video:c.video,full:c.full,thumb:c.thumb,media_type:c.media_type,is_active:true,
+  body:'Dernière créative Meta de '+s.name+'.'+(s.category&&s.category.length?' Niche : '+s.category.join(' · ')+'.':''),
+  cta:'Voir la boutique',cta_link:'https://'+s.domain,
+  _extraStats:[["Boutique",s.domain],["Visites/mois",fmt(s.traffic_number)],["Meta Ads actives",fmt(s.active_ads_total)],["Marché",s.main_market||'—']]});}
 function cap(s){return s?s.charAt(0).toUpperCase()+s.slice(1):s;}
 function showAdModal(a){
   if(!a)return;
@@ -427,6 +430,7 @@ function showAdModal(a){
   if(a.collation_count>1) rows.push(["Variantes","×"+a.collation_count]);
   if(a.language) rows.push(["Langue",cap(a.language)]);
   rows.push(["Format",a.media_type==='video'?'Vidéo':'Image']);
+  if(a._extraStats) a._extraStats.forEach(([l,v])=>{if(v&&v!=='—')rows.push([l,v]);});
   const showLanding=a.landing_url && a.landing_url!==a.cta_link;
   m.innerHTML=`<div class="modal-panel">
     <div class="modal-media"><button class="modal-x" onclick="closeAd()">✕</button>${media}</div>
