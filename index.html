@@ -6,140 +6,148 @@
 <title>storelens — e-com spy</title>
 <style>
   :root{
-    --canvas:#f5f7fb; --panel:#ffffff; --line:#e6e9ef; --line2:#d8dde7;
-    --tx:#0f172a; --mut:#64748b; --dim:#94a3b8;
-    --blue:#2563eb; --blue600:#1d4ed8; --blue-bg:#eef4ff; --blue-bg2:#e0eaff;
-    --gn:#16a34a; --gn-bg:#e7f7ee; --am:#d97706; --am-bg:#fef3e2; --rd:#e11d48;
+    --canvas:#f6f8fc; --panel:#ffffff; --line:#e9ecf3; --line2:#dde1ea;
+    --tx:#0e1526; --mut:#5f6b82; --dim:#98a1b3;
+    --blue:#2f6bff; --blue600:#1e54e6; --blue-bg:#eaf1ff; --blue-bg2:#d8e5ff;
+    --gn:#12a150; --gn-bg:#e6f6ec; --am:#e08600; --am-bg:#fdf1df; --rd:#e11d48;
     --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,system-ui,sans-serif;
     --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
-    --sh:0 1px 2px rgba(15,23,42,.04),0 4px 16px rgba(15,23,42,.04);
-    --sh2:0 8px 30px rgba(15,23,42,.10);
+    --sh:0 1px 2px rgba(14,21,38,.05),0 6px 20px rgba(14,21,38,.05);
+    --sh2:0 12px 34px rgba(14,21,38,.13);
   }
   *{box-sizing:border-box}
   body{margin:0;background:var(--canvas);color:var(--tx);font-family:var(--sans);line-height:1.5;-webkit-font-smoothing:antialiased}
   a{color:inherit;text-decoration:none}
   code,.mono{font-family:var(--mono)}
-  .mut{color:var(--mut)} .dim{color:var(--dim)}
-  .hidden{display:none!important}
+  .mut{color:var(--mut)} .dim{color:var(--dim)} .hidden{display:none!important}
+  img{max-width:100%}
 
-  .app{display:grid;grid-template-columns:238px 1fr;min-height:100vh}
-  @media(max-width:820px){.app{grid-template-columns:1fr}}
+  .app{display:grid;grid-template-columns:236px 1fr;min-height:100vh}
+  @media(max-width:860px){.app{grid-template-columns:1fr}}
 
-  /* sidebar */
-  .sidebar{background:var(--panel);border-right:1px solid var(--line);padding:20px 14px;display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
-  @media(max-width:820px){.sidebar{position:static;height:auto;flex-direction:row;align-items:center;overflow-x:auto;border-right:none;border-bottom:1px solid var(--line);gap:6px}}
-  .brand{display:flex;align-items:center;gap:9px;font-weight:750;font-size:18px;letter-spacing:-.02em;padding:4px 8px 16px}
-  @media(max-width:820px){.brand{padding:0 8px;white-space:nowrap}}
-  .brand .d{width:22px;height:22px;border-radius:6px;background:linear-gradient(135deg,var(--blue),#60a5fa);box-shadow:0 4px 12px rgba(37,99,235,.4)}
-  .ws{display:flex;align-items:center;gap:8px;background:var(--canvas);border:1px solid var(--line);border-radius:10px;padding:7px 10px;font-size:13px;margin:0 4px 14px}
-  @media(max-width:820px){.ws{display:none}}
-  .ws .av{width:22px;height:22px;border-radius:6px;background:var(--blue-bg);color:var(--blue);display:grid;place-items:center;font-weight:700;font-size:11px}
+  .sidebar{background:var(--panel);border-right:1px solid var(--line);padding:18px 13px;display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
+  @media(max-width:860px){.sidebar{position:static;height:auto;flex-direction:row;align-items:center;overflow-x:auto;border-right:none;border-bottom:1px solid var(--line);gap:4px}}
+  .brand{display:flex;align-items:center;gap:9px;font-weight:800;font-size:18px;letter-spacing:-.02em;padding:6px 8px 16px}
+  @media(max-width:860px){.brand{padding:0 6px;white-space:nowrap}}
+  .brand .d{width:24px;height:24px;border-radius:7px;background:linear-gradient(135deg,var(--blue),#7aa4ff);box-shadow:0 5px 14px rgba(47,107,255,.45);position:relative}
+  .brand .d::after{content:"";position:absolute;inset:7px;border:2px solid #fff;border-radius:50%;opacity:.9}
+  .ws{display:flex;align-items:center;gap:8px;background:var(--canvas);border:1px solid var(--line);border-radius:10px;padding:7px 10px;font-size:13px;margin:0 4px 16px;font-weight:600}
+  @media(max-width:860px){.ws{display:none}}
+  .ws .av{width:22px;height:22px;border-radius:6px;background:var(--blue);color:#fff;display:grid;place-items:center;font-weight:700;font-size:11px}
   .nav{display:flex;flex-direction:column;gap:2px}
-  @media(max-width:820px){.nav{flex-direction:row}}
-  .nav a{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:9px;color:var(--mut);font-size:14px;font-weight:550;cursor:pointer;white-space:nowrap}
-  .nav a .i{width:18px;text-align:center;opacity:.8}
+  @media(max-width:860px){.nav{flex-direction:row}}
+  .nav a{display:flex;align-items:center;gap:11px;padding:10px 11px;border-radius:9px;color:var(--mut);font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap}
+  .nav a .i{width:17px;text-align:center;opacity:.85}
   .nav a:hover{background:var(--canvas);color:var(--tx)}
   .nav a.on{background:var(--blue-bg);color:var(--blue600)}
-  .nav a.soon{opacity:.5;cursor:default}
+  .nav a.soon{opacity:.45;cursor:default}
   .nav a.soon:hover{background:none;color:var(--mut)}
-  .nav a .lock{margin-left:auto;font-size:10px;color:var(--dim);font-family:var(--mono)}
-  .side-foot{margin-top:auto;padding:10px 8px;font-size:12px;color:var(--dim)}
-  @media(max-width:820px){.side-foot{display:none}}
+  .nav a .lock{margin-left:auto;font-size:9.5px;color:var(--dim);font-family:var(--mono);letter-spacing:.05em}
+  .side-foot{margin-top:auto;padding:10px 8px;font-size:11.5px;color:var(--dim)}
+  @media(max-width:860px){.side-foot{display:none}}
 
-  /* main */
   .main{min-width:0}
-  .topbar{height:60px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.85);backdrop-filter:blur(8px);
-    display:flex;align-items:center;gap:14px;padding:0 26px;position:sticky;top:0;z-index:10}
-  .search{flex:1;max-width:420px;display:flex;align-items:center;gap:9px;background:var(--canvas);border:1px solid var(--line);border-radius:10px;padding:8px 12px;color:var(--dim);font-size:13.5px}
-  .beta{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--blue600);background:var(--blue-bg);border:1px solid var(--blue-bg2);border-radius:999px;padding:4px 11px}
-  .content{padding:26px}
-  @media(max-width:820px){.content{padding:18px}}
+  .topbar{height:62px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.82);backdrop-filter:blur(10px);display:flex;align-items:center;gap:14px;padding:0 28px;position:sticky;top:0;z-index:10}
+  .search{flex:1;max-width:440px;display:flex;align-items:center;gap:9px;background:var(--canvas);border:1px solid var(--line);border-radius:10px;padding:9px 13px;color:var(--dim);font-size:13.5px}
+  .beta{margin-left:auto;font-family:var(--mono);font-size:11px;font-weight:600;color:var(--blue600);background:var(--blue-bg);border:1px solid var(--blue-bg2);border-radius:999px;padding:5px 12px}
+  .content{padding:30px 28px 60px;max-width:1240px}
+  @media(max-width:860px){.content{padding:20px}}
 
-  h1{font-size:26px;letter-spacing:-.02em;margin:0 0 5px}
-  h2{font-size:17px;margin:0;letter-spacing:-.01em}
-  .sub{color:var(--mut);font-size:15px;max-width:620px;margin:0 0 24px}
-  .kicker{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);font-weight:600}
+  h1{font-size:27px;letter-spacing:-.025em;margin:0 0 6px;font-weight:800}
+  .sub{color:var(--mut);font-size:15px;max-width:640px;margin:0 0 26px}
+  .kicker{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);font-weight:700;margin-bottom:6px}
 
-  /* store cards */
-  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-  @media(max-width:1050px){.grid{grid-template-columns:1fr 1fr}}
-  @media(max-width:620px){.grid{grid-template-columns:1fr}}
-  .scard{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;cursor:pointer;transition:.16s;box-shadow:var(--sh)}
-  .scard:hover{transform:translateY(-3px);box-shadow:var(--sh2);border-color:var(--line2)}
-  .scard .top{height:74px;background:linear-gradient(120deg,#eef4ff,#f5f7fb);display:flex;align-items:flex-end;padding:0 16px;position:relative}
-  .scard .fav{width:46px;height:46px;border-radius:12px;transform:translateY(50%);background:var(--panel);border:1px solid var(--line);box-shadow:var(--sh);display:grid;place-items:center;font-weight:750;font-size:17px;color:var(--blue)}
-  .scard .adspy{position:absolute;top:12px;right:12px;font-family:var(--mono);font-size:10px;font-weight:700;color:#fff;background:var(--blue);border-radius:6px;padding:3px 8px}
-  .scard .body{padding:32px 16px 16px}
-  .scard .nm{font-weight:700;font-size:16px}
-  .scard .dm{color:var(--dim);font-size:12.5px;font-family:var(--mono);margin-bottom:14px}
-  .kpis{display:flex;gap:18px}
-  .kpi .v{font-weight:750;font-size:16px}
+  /* store cards — screenshot-led like TrendTrack */
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  @media(max-width:1080px){.grid{grid-template-columns:1fr 1fr}}
+  @media(max-width:640px){.grid{grid-template-columns:1fr}}
+  .scard{background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden;cursor:pointer;transition:.18s;box-shadow:var(--sh)}
+  .scard:hover{transform:translateY(-4px);box-shadow:var(--sh2);border-color:var(--line2)}
+  .thumb{position:relative;aspect-ratio:16/10;overflow:hidden;background:linear-gradient(120deg,#eaf1ff,#f6f8fc);border-bottom:1px solid var(--line)}
+  .thumb img{width:100%;height:100%;object-fit:cover;object-position:top;transition:.5s}
+  .scard:hover .thumb img{transform:scale(1.04)}
+  .thumb .fade{position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(255,255,255,.06))}
+  .thumb .fav{position:absolute;left:14px;bottom:-18px;width:44px;height:44px;border-radius:12px;background:#fff;border:1px solid var(--line);box-shadow:var(--sh);display:grid;place-items:center;overflow:hidden}
+  .thumb .fav img{width:26px;height:26px;object-fit:contain}
+  .thumb .adspy{position:absolute;top:12px;right:12px;font-family:var(--mono);font-size:10px;font-weight:700;color:#fff;background:var(--blue);border-radius:7px;padding:4px 9px;box-shadow:0 4px 10px rgba(47,107,255,.4)}
+  .thumb .cat{position:absolute;top:12px;left:12px;font-size:11px;font-weight:600;color:var(--tx);background:rgba(255,255,255,.9);backdrop-filter:blur(4px);border-radius:7px;padding:4px 9px}
+  .scard .body{padding:26px 17px 17px}
+  .scard .nm{font-weight:750;font-size:16.5px}
+  .scard .dm{color:var(--dim);font-size:12.5px;font-family:var(--mono);margin-bottom:15px}
+  .kpis{display:flex;gap:20px}
+  .kpi .v{font-weight:800;font-size:16px;letter-spacing:-.01em}
   .kpi .v.b{color:var(--blue)} .kpi .v.g{color:var(--gn)}
   .kpi .l{font-size:11px;color:var(--dim);margin-top:1px}
 
   /* detail */
-  .back{display:inline-flex;gap:7px;align-items:center;color:var(--mut);font-size:14px;cursor:pointer;margin-bottom:18px;font-weight:550}
+  .back{display:inline-flex;gap:7px;align-items:center;color:var(--mut);font-size:14px;cursor:pointer;margin-bottom:18px;font-weight:600}
   .back:hover{color:var(--blue)}
-  .shead{display:flex;align-items:center;gap:15px;flex-wrap:wrap}
-  .shead .fav{width:54px;height:54px;border-radius:14px;background:var(--panel);border:1px solid var(--line);box-shadow:var(--sh);display:grid;place-items:center;font-weight:750;font-size:22px;color:var(--blue)}
-  .chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:6px}
-  .chip{font-size:12px;color:var(--mut);background:var(--panel);border:1px solid var(--line);border-radius:7px;padding:3px 9px;font-weight:550}
+  .shead{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  .shead .fav{width:56px;height:56px;border-radius:15px;background:#fff;border:1px solid var(--line);box-shadow:var(--sh);display:grid;place-items:center;overflow:hidden}
+  .shead .fav img{width:34px;height:34px;object-fit:contain}
+  .shead h1{margin:0;font-size:26px}
+  .chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:7px}
+  .chip{font-size:12px;color:var(--mut);background:var(--panel);border:1px solid var(--line);border-radius:7px;padding:3px 9px;font-weight:600}
   .chip.live{color:var(--gn);background:var(--gn-bg);border-color:transparent}
   .chip.mono{font-family:var(--mono)}
 
-  .tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin:22px 0 22px}
-  .tabs button{background:none;border:none;padding:11px 14px;font-size:14px;font-weight:600;color:var(--mut);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;font-family:inherit}
+  .tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);margin:24px 0}
+  .tabs button{background:none;border:none;padding:12px 15px;font-size:14px;font-weight:650;color:var(--mut);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;font-family:inherit}
   .tabs button:hover{color:var(--tx)}
   .tabs button.on{color:var(--blue);border-bottom-color:var(--blue)}
 
   .kpirow{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px}
   @media(max-width:700px){.kpirow{grid-template-columns:1fr 1fr}}
-  .stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;box-shadow:var(--sh)}
-  .stat .v{font-weight:750;font-size:23px;letter-spacing:-.02em}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:17px;box-shadow:var(--sh)}
+  .stat .v{font-weight:800;font-size:23px;letter-spacing:-.02em}
   .stat .v.b{color:var(--blue)} .stat .v.g{color:var(--gn)}
   .stat .l{font-size:12px;color:var(--mut);margin-top:3px}
 
   .cols{display:grid;grid-template-columns:1.5fr 1fr;gap:16px}
   @media(max-width:820px){.cols{grid-template-columns:1fr}}
-  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px;box-shadow:var(--sh)}
-  .card .ch{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:20px;box-shadow:var(--sh)}
+  .card .ch{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:2px}
+  .card h2{font-size:16px;margin:0;font-weight:750}
 
-  .bars{display:flex;flex-direction:column;gap:9px;margin-top:12px}
-  .bar{display:grid;grid-template-columns:34px 1fr 46px;gap:10px;align-items:center;font-size:13px}
+  .bars{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+  .bar{display:grid;grid-template-columns:32px 1fr 46px;gap:11px;align-items:center;font-size:13px}
   .bar .track{height:8px;border-radius:5px;background:var(--canvas);overflow:hidden}
-  .bar .fill{height:100%;border-radius:5px;background:linear-gradient(90deg,var(--blue),#60a5fa)}
+  .bar .fill{height:100%;border-radius:5px;background:linear-gradient(90deg,var(--blue),#7aa4ff)}
   .bar .n{font-family:var(--mono);color:var(--mut);text-align:right;font-size:12px}
 
-  .swipe{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-  @media(max-width:1050px){.swipe{grid-template-columns:repeat(3,1fr)}}
+  .swipe{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}
+  @media(max-width:1080px){.swipe{grid-template-columns:repeat(3,1fr)}}
   @media(max-width:720px){.swipe{grid-template-columns:1fr 1fr}}
   @media(max-width:460px){.swipe{grid-template-columns:1fr}}
-  .ad{background:var(--panel);border:1px solid var(--line);border-radius:13px;overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--sh);transition:.16s}
+  .ad{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--sh);transition:.16s}
   .ad:hover{transform:translateY(-3px);box-shadow:var(--sh2)}
-  .ad .media{aspect-ratio:1/1;background:linear-gradient(135deg,#eef4ff,#f5f7fb);position:relative;overflow:hidden}
+  .ad .media{aspect-ratio:1/1;background:linear-gradient(135deg,#eaf1ff,#f6f8fc);position:relative;overflow:hidden}
   .ad .media img{width:100%;height:100%;object-fit:cover;display:block}
-  .ad .noimg{position:absolute;inset:0;display:grid;place-items:center;color:var(--dim);font-size:26px}
-  .ad .badges{position:absolute;top:8px;left:8px;display:flex;gap:6px}
-  .ad .b{font-family:var(--mono);font-size:10px;padding:3px 7px;border-radius:6px;background:rgba(255,255,255,.92);color:var(--mut);box-shadow:var(--sh);font-weight:600}
+  .ad .noimg{position:absolute;inset:0;display:grid;place-items:center;color:var(--dim);font-size:30px}
+  .ad .badges{position:absolute;top:9px;left:9px;display:flex;gap:6px}
+  .ad .b{font-family:var(--mono);font-size:10px;padding:3px 8px;border-radius:7px;background:rgba(255,255,255,.94);color:var(--mut);box-shadow:var(--sh);font-weight:600}
   .ad .b.live{color:var(--gn)} .ad .b.scale{color:var(--am);background:var(--am-bg)}
-  .ad .body{padding:11px 12px 13px;display:flex;flex-direction:column;gap:7px;flex:1}
-  .ad .copy{font-size:12.5px;color:var(--tx);line-height:1.4;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .ad .foot{display:flex;align-items:center;gap:7px;padding:9px 12px;border-bottom:1px solid var(--line)}
+  .ad .foot .pf{width:20px;height:20px;border-radius:6px;background:var(--canvas);overflow:hidden;display:grid;place-items:center;flex:0 0 20px}
+  .ad .foot .pf img{width:14px;height:14px}
+  .ad .foot .pn{font-size:12px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .ad .body{padding:11px 12px 13px;display:flex;flex-direction:column;gap:8px;flex:1}
+  .ad .copy{font-size:12.5px;color:var(--tx);line-height:1.45;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
   .ad .meta{margin-top:auto;display:flex;justify-content:space-between;font-family:var(--mono);font-size:10.5px;color:var(--dim)}
 
-  .prods{display:grid;grid-template-columns:repeat(6,1fr);gap:13px}
-  @media(max-width:1050px){.prods{grid-template-columns:repeat(4,1fr)}}
+  .prods{display:grid;grid-template-columns:repeat(6,1fr);gap:14px}
+  @media(max-width:1080px){.prods{grid-template-columns:repeat(4,1fr)}}
   @media(max-width:600px){.prods{grid-template-columns:repeat(3,1fr)}}
-  .prod .ph{aspect-ratio:1/1;border-radius:11px;overflow:hidden;background:var(--canvas);border:1px solid var(--line)}
+  .prod .ph{aspect-ratio:1/1;border-radius:12px;overflow:hidden;background:var(--canvas);border:1px solid var(--line)}
   .prod .ph img{width:100%;height:100%;object-fit:cover}
-  .prod .t{font-size:11.5px;color:var(--mut);margin-top:6px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-  .prod .p{font-weight:700;font-size:12.5px;color:var(--blue);margin-top:2px}
+  .prod .t{font-size:11.5px;color:var(--mut);margin-top:7px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .prod .p{font-weight:750;font-size:12.5px;color:var(--blue);margin-top:2px}
 
   .spark{width:100%;height:150px;margin-top:10px}
-  .spark path.line{fill:none;stroke:var(--blue);stroke-width:2}
-  .spark path.area{fill:url(#gb);opacity:.9}
+  .spark path.line{fill:none;stroke:var(--blue);stroke-width:2.2}
+  .spark path.area{fill:url(#gb)}
   .spark .lbl{font-family:var(--mono);font-size:10px;fill:var(--dim)}
-
-  .section-t{font-size:15px;font-weight:700;margin:0 0 14px;display:flex;align-items:center;gap:8px}
+  .section-t{font-size:15px;font-weight:750;margin:0 0 15px;display:flex;align-items:center;gap:8px}
 </style>
 </head>
 <body>
@@ -150,9 +158,9 @@
     <div class="nav">
       <a class="on" id="nav-boutiques" onclick="go('boutiques')"><span class="i">🏬</span> Boutiques</a>
       <a id="nav-ads" onclick="go('ads')"><span class="i">🎯</span> Publicités</a>
-      <a class="soon"><span class="i">🛰️</span> Brandtracker <span class="lock">soon</span></a>
-      <a class="soon"><span class="i">✉️</span> Emails <span class="lock">soon</span></a>
-      <a class="soon"><span class="i">🧬</span> Similaires <span class="lock">soon</span></a>
+      <a class="soon"><span class="i">🛰️</span> Brandtracker <span class="lock">SOON</span></a>
+      <a class="soon"><span class="i">✉️</span> Emails <span class="lock">SOON</span></a>
+      <a class="soon"><span class="i">🧬</span> Similaires <span class="lock">SOON</span></a>
     </div>
     <div class="side-foot">Beta · données réelles<br>Meta Ad Library + Shopify</div>
   </aside>
@@ -163,66 +171,67 @@
       <span class="beta">BETA</span>
     </div>
     <div class="content">
-      <!-- BOUTIQUES -->
       <div id="view-boutiques">
         <div class="kicker">Competitive intelligence</div>
         <h1>Espionne n'importe quelle boutique</h1>
         <p class="sub">Catalogue, historique de lancement, et surtout ses <b>publicités Meta</b> — créas, scaling, timeline. Données 100% réelles capturées par le moteur storelens.</p>
         <div class="grid" id="storeGrid"></div>
       </div>
-      <!-- ADS GLOBAL -->
       <div id="view-ads" class="hidden">
         <div class="kicker">Publicités Meta</div>
         <h1>Swipe file</h1>
         <p class="sub">Toutes les créas capturées, triées par signal de scaling (× duplications).</p>
         <div class="swipe" id="adsGrid"></div>
       </div>
-      <!-- DETAIL -->
       <div id="view-detail" class="hidden"></div>
     </div>
   </main>
 </div>
 
 <script>
-const fmt = n => n==null ? "—" : n>=1e6 ? (n/1e6).toFixed(1)+"M" : n>=1e3 ? (n/1e3).toFixed(1)+"k" : ""+n;
-const initials = s => s.slice(0,2).toUpperCase();
-const esc = s => (s||"").replace(/</g,"&lt;");
+const fmt=n=>n==null?"—":n>=1e6?(n/1e6).toFixed(1)+"M":n>=1e3?(n/1e3).toFixed(1)+"k":""+n;
+const esc=s=>(s||"").replace(/</g,"&lt;");
 let DATA=null;
 
 fetch("data/demo.json").then(r=>r.json()).then(d=>{DATA=d;renderDash();renderAds();})
-  .catch(()=>{document.getElementById('storeGrid').innerHTML='<p class="mut">Impossible de charger data/demo.json (sers via un serveur / GitHub Pages).</p>';});
+  .catch(()=>{document.getElementById('storeGrid').innerHTML='<p class="mut">Impossible de charger data/demo.json.</p>';});
 
-function go(view){
-  ['boutiques','ads','detail'].forEach(v=>document.getElementById('view-'+v).classList.add('hidden'));
-  document.getElementById('view-'+view).classList.remove('hidden');
-  document.getElementById('nav-boutiques').classList.toggle('on',view==='boutiques');
-  document.getElementById('nav-ads').classList.toggle('on',view==='ads');
-  window.scrollTo(0,0);
-}
+function go(v){['boutiques','ads','detail'].forEach(x=>document.getElementById('view-'+x).classList.add('hidden'));
+  document.getElementById('view-'+v).classList.remove('hidden');
+  document.getElementById('nav-boutiques').classList.toggle('on',v==='boutiques');
+  document.getElementById('nav-ads').classList.toggle('on',v==='ads');window.scrollTo(0,0);}
+
+function favImg(s,cls){return s.logo?`<img src="${s.logo}" alt="">`:`<span style="font-weight:800;color:var(--blue);font-size:15px">${s.name.slice(0,2).toUpperCase()}</span>`;}
 
 function renderDash(){
-  document.getElementById('storeGrid').innerHTML = DATA.stores.map((s,i)=>`
-    <div class="scard" onclick="showStore(${i})">
-      <div class="top">${s.hero?'<span class="adspy">AD-SPY</span>':''}<div class="fav">${initials(s.name)}</div></div>
+  document.getElementById('storeGrid').innerHTML=DATA.stores.map((s,i)=>{
+    const adsN=s.hero?fmt(s.active_ads_total):fmt((s.ads||[]).length);
+    const adsL=s.hero?'ads actives':'pubs suivies';
+    const third=s.traffic_number?{v:fmt(s.traffic_number),l:'visites/mois',c:'g'}:{v:'depuis '+(s.launch_year||'—'),l:'',c:''};
+    return `<div class="scard" onclick="showStore(${i})">
+      <div class="thumb">
+        ${s.shot?`<img src="${s.shot}" loading="lazy" alt="">`:''}<div class="fade"></div>
+        ${s.category?`<span class="cat">${s.category}</span>`:''}
+        ${s.hero?'<span class="adspy">AD-SPY</span>':''}
+        <div class="fav">${favImg(s)}</div>
+      </div>
       <div class="body">
         <div class="nm">${s.name}</div>
         <div class="dm">${s.domain}</div>
         <div class="kpis">
+          <div class="kpi"><div class="v b">${adsN}</div><div class="l">${adsL}</div></div>
           <div class="kpi"><div class="v">${fmt(s.products_count)}</div><div class="l">produits</div></div>
-          <div class="kpi"><div class="v b">${s.ads&&s.ads.length?fmt(s.active_ads_total):'—'}</div><div class="l">ads actives</div></div>
-          <div class="kpi"><div class="v g">${s.traffic_number?fmt(s.traffic_number):'—'}</div><div class="l">visites/mois</div></div>
+          <div class="kpi"><div class="v ${third.c}">${third.v}</div><div class="l">${third.l}</div></div>
         </div>
       </div>
-    </div>`).join('');
+    </div>`;}).join('');
 }
 
 function renderAds(){
-  const all=[];
-  DATA.stores.forEach(s=>(s.ads||[]).forEach(a=>all.push({...a,store:s.name})));
+  const all=[];DATA.stores.forEach(s=>(s.ads||[]).forEach(a=>all.push({...a,_logo:s.logo})));
   all.sort((a,b)=>(b.collation_count||0)-(a.collation_count||0));
-  document.getElementById('adsGrid').innerHTML = all.map(adCard).join('') || '<p class="mut">—</p>';
+  document.getElementById('adsGrid').innerHTML=all.map(adCard).join('')||'<p class="mut">—</p>';
 }
-
 function adCard(a){
   return `<div class="ad">
     <div class="media">
@@ -233,6 +242,7 @@ function adCard(a){
         ${a.collation_count>1?`<span class="b scale">×${a.collation_count}</span>`:''}
       </div>
     </div>
+    ${a.page_name?`<div class="foot"><span class="pf">${a._logo?`<img src="${a._logo}">`:'▦'}</span><span class="pn">${esc(a.page_name)}</span></div>`:''}
     <div class="body">
       <div class="copy">${esc(a.body)||'—'}</div>
       <div class="meta"><span>${a.start_date||''}</span><span>${a.days_running!=null?a.days_running+'j':''} · ${a.media_type}</span></div>
@@ -241,21 +251,20 @@ function adCard(a){
 }
 
 function showStore(i){
-  const s=DATA.stores[i];
-  go('detail');
-  const hist=s.ads_history||{}, hk=Object.keys(hist).sort();
-  const hasAds=s.ads&&s.ads.length;
-  const det=document.getElementById('view-detail');
-  det.innerHTML=`
+  const s=DATA.stores[i];go('detail');
+  const hist=s.ads_history||{},hk=Object.keys(hist).sort();
+  const hasAds=s.ads&&s.ads.length, hasHist=hk.length;
+  const activeVal=s.hero?fmt(s.active_ads_total):fmt((s.ads||[]).filter(a=>a.is_active).length);
+  document.getElementById('view-detail').innerHTML=`
     <div class="back" onclick="go('boutiques')">← toutes les boutiques</div>
     <div class="shead">
-      <div class="fav">${initials(s.name)}</div>
+      <div class="fav">${favImg(s)}</div>
       <div>
-        <h1 style="margin:0">${s.name}</h1>
+        <h1>${s.name}</h1>
         <div class="chips">
           <span class="chip mono">${s.domain}</span>
           <span class="chip">${s.category||''}</span>
-          ${s.creation_date?`<span class="chip">depuis ${s.creation_date.slice(0,4)}</span>`:''}
+          ${s.launch_year?`<span class="chip">depuis ${s.launch_year}</span>`:''}
           <span class="chip">Shopify</span>
           ${hasAds?'<span class="chip live">● ad-spy actif</span>':''}
         </div>
@@ -266,65 +275,45 @@ function showStore(i){
       ${hasAds?'<button data-t="ads" onclick="tab(this)">Publicités Meta</button>':''}
       <button data-t="pr" onclick="tab(this)">Produits</button>
     </div>
-
     <div data-p="ov">
       <div class="kpirow">
+        <div class="stat"><div class="v b">${activeVal}</div><div class="l">${s.hero?'ads actives':'publicités captées'}</div></div>
         <div class="stat"><div class="v g">${s.traffic_number?fmt(s.traffic_number):'—'}</div><div class="l">visites / mois</div></div>
-        <div class="stat"><div class="v b">${hasAds?fmt(s.active_ads_total):'—'}</div><div class="l">ads actives</div></div>
         <div class="stat"><div class="v">${fmt(s.products_count)}</div><div class="l">produits</div></div>
         <div class="stat"><div class="v">${s.main_market||'—'}</div><div class="l">marché principal</div></div>
       </div>
       <div class="cols">
-        ${hk.length?`<div class="card"><div class="ch"><h2>📈 Ads actives / jour</h2><span class="dim mono" style="font-size:12px">le signal de scaling</span></div>
-          <p class="mut" style="font-size:13px;margin:2px 0 0">Nombre de pubs en ligne chaque jour — détecte qui scale.</p>${line(hk.map(k=>hist[k]),hk)}</div>`:''}
+        ${hasHist?`<div class="card"><div class="ch"><h2>📈 Ads actives / jour</h2><span class="dim mono" style="font-size:12px">signal de scaling</span></div>
+          <p class="mut" style="font-size:13px;margin:3px 0 0">Nombre de pubs en ligne chaque jour — détecte qui scale.</p>${line(hk.map(k=>hist[k]),hk)}</div>`
+          :`<div class="card"><div class="ch"><h2>🚀 Lancements produits / mois</h2></div>${bars(lastMonths(s.launches_per_month,12))}</div>`}
         ${(s.country_stats&&Object.keys(s.country_stats).length)
           ?`<div class="card"><div class="ch"><h2>🌍 Ads par pays</h2></div>${bars(s.country_stats)}</div>`
-          :`<div class="card"><div class="ch"><h2>🚀 Lancements / mois</h2></div>${bars(lastMonths(s.launches_per_month,10))}</div>`}
+          :`<div class="card"><div class="ch"><h2>🏷️ Aperçu</h2></div>
+             <div class="bars"><div class="bar"><span class="mono dim">Prod.</span><span class="track"><span class="fill" style="width:100%"></span></span><span class="n">${fmt(s.products_count)}</span></div></div>
+             <p class="mut" style="font-size:13px;margin-top:12px">Boutique ${s.category||''}, en ligne depuis ${s.launch_year||'—'}. ${(s.ads||[]).length} publicités Meta suivies.</p></div>`}
       </div>
     </div>
-
-    ${hasAds?`<div data-p="ads" class="hidden">
-      <div class="section-t">🎯 ${s.ads.length} publicités Meta</div>
-      <div class="swipe">${s.ads.map(adCard).join('')}</div></div>`:''}
-
-    <div data-p="pr" class="hidden">
-      <div class="section-t">📦 Derniers produits lancés</div>
-      <div class="prods">${(s.products||[]).map(p=>`
-        <div class="prod"><div class="ph">${p.image?`<img src="${p.image}" loading="lazy">`:''}</div>
-          <div class="t">${esc(p.title)}</div>
-          <div class="p">${p.price?p.price.toFixed(0)+(s.currency==='EUR'?'€':'$'):''}</div></div>`).join('')}</div>
-    </div>`;
+    ${hasAds?`<div data-p="ads" class="hidden"><div class="section-t">🎯 ${s.ads.length} publicités Meta</div>
+      <div class="swipe">${s.ads.map(a=>adCard({...a,_logo:s.logo})).join('')}</div></div>`:''}
+    <div data-p="pr" class="hidden"><div class="section-t">📦 Derniers produits lancés</div>
+      <div class="prods">${(s.products||[]).map(p=>`<div class="prod"><div class="ph">${p.image?`<img src="${p.image}" loading="lazy">`:''}</div>
+        <div class="t">${esc(p.title)}</div><div class="p">${p.price?p.price.toFixed(0)+(s.currency==='EUR'?'€':'$'):''}</div></div>`).join('')}</div></div>`;
 }
-
-function tab(btn){
-  const root=btn.closest('#view-detail');
-  root.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b===btn));
-  root.querySelectorAll('[data-p]').forEach(p=>p.classList.toggle('hidden',p.getAttribute('data-p')!==btn.dataset.t));
-  window.scrollTo(0,0);
-}
-
-function lastMonths(obj,n){const k=Object.keys(obj||{}).sort().slice(-n),o={};k.forEach(x=>o[x.slice(2)]=obj[x]);return o;}
-function bars(obj){
-  const e=Object.entries(obj||{}).sort((a,b)=>b[1]-a[1]).slice(0,10),max=Math.max(...e.map(x=>x[1]),1);
+function tab(btn){const r=document.getElementById('view-detail');
+  r.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b===btn));
+  r.querySelectorAll('[data-p]').forEach(p=>p.classList.toggle('hidden',p.getAttribute('data-p')!==btn.dataset.t));window.scrollTo(0,0);}
+function lastMonths(o,n){const k=Object.keys(o||{}).sort().slice(-n),x={};k.forEach(m=>x[m.slice(2)]=o[m]);return x;}
+function bars(o){const e=Object.entries(o||{}).sort((a,b)=>b[1]-a[1]).slice(0,10),mx=Math.max(...e.map(x=>x[1]),1);
   return `<div class="bars">${e.map(([k,v])=>`<div class="bar"><span class="mono dim">${k}</span>
-    <span class="track"><span class="fill" style="width:${Math.max(4,100*v/max)}%"></span></span>
-    <span class="n">${fmt(v)}</span></div>`).join('')}</div>`;
-}
-function line(vals,keys){
-  const W=560,H=150,pad=10,min=Math.min(...vals),max=Math.max(...vals);
-  const x=i=>pad+i*(W-2*pad)/(vals.length-1), y=v=>H-24-(v-min)/((max-min)||1)*(H-44);
-  let d="M"+x(0).toFixed(1)+" "+y(vals[0]).toFixed(1);
-  vals.forEach((v,i)=>{if(i)d+=" L"+x(i).toFixed(1)+" "+y(v).toFixed(1);});
+    <span class="track"><span class="fill" style="width:${Math.max(5,100*v/mx)}%"></span></span><span class="n">${fmt(v)}</span></div>`).join('')}</div>`;}
+function line(vals,keys){const W=560,H=150,pad=10,mn=Math.min(...vals),mx=Math.max(...vals);
+  const x=i=>pad+i*(W-2*pad)/(vals.length-1),y=v=>H-24-(v-mn)/((mx-mn)||1)*(H-44);
+  let d="M"+x(0).toFixed(1)+" "+y(vals[0]).toFixed(1);vals.forEach((v,i)=>{if(i)d+=" L"+x(i).toFixed(1)+" "+y(v).toFixed(1);});
   return `<svg class="spark" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
-    <defs><linearGradient id="gb" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#2563eb" stop-opacity=".18"/><stop offset="1" stop-color="#2563eb" stop-opacity="0"/></linearGradient></defs>
-    <path class="area" d="${d} L${x(vals.length-1)} ${H-24} L${x(0)} ${H-24} Z"/>
-    <path class="line" d="${d}"/>
-    <text class="lbl" x="${pad}" y="${H-6}">${keys[0]}</text>
-    <text class="lbl" x="${W-pad}" y="${H-6}" text-anchor="end">${keys[keys.length-1]}</text>
-    <text class="lbl" x="${pad}" y="14">pic ${max}</text>
-  </svg>`;
-}
+    <defs><linearGradient id="gb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2f6bff" stop-opacity=".2"/><stop offset="1" stop-color="#2f6bff" stop-opacity="0"/></linearGradient></defs>
+    <path class="area" d="${d} L${x(vals.length-1)} ${H-24} L${x(0)} ${H-24} Z"/><path class="line" d="${d}"/>
+    <text class="lbl" x="${pad}" y="${H-6}">${keys[0]}</text><text class="lbl" x="${W-pad}" y="${H-6}" text-anchor="end">${keys[keys.length-1]}</text>
+    <text class="lbl" x="${pad}" y="14">pic ${mx}</text></svg>`;}
 </script>
 </body>
 </html>
