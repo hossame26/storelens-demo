@@ -221,6 +221,29 @@
   .crow-t{font-size:12px;color:var(--mut);font-weight:700;text-transform:uppercase;letter-spacing:.04em}
   .crow-f{display:flex;gap:14px;font-size:13px;font-weight:700}
   .tabs button.soon-tab{opacity:.4;cursor:default} .tabs button b{font-size:12px;font-weight:800;margin-left:2px}
+  .subbar{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 2px;font-size:12.5px}
+  .subbar span{display:inline-flex;align-items:center;gap:5px;background:var(--soft);border:1px solid var(--line);border-radius:8px;padding:5px 10px;color:var(--mut);font-weight:600}
+  .cards3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:16px}
+  @media(max-width:820px){.cards3{grid-template-columns:1fr}}
+  .card3{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px;box-shadow:var(--sh)}
+  .card3 .c3-t{font-size:11.5px;color:var(--mut);font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px}
+  .card3 .c3-v{font-size:24px;font-weight:800;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .card3 .c3-sub{font-size:12px;color:var(--mut);font-weight:600}
+  .stars{color:#f5b301;letter-spacing:1px;font-size:16px}
+  .socs{display:flex;flex-direction:column;gap:6px}
+  .socs .s{display:flex;justify-content:space-between;font-size:13px;font-weight:600}.socs .s .p{color:var(--mut);font-family:var(--mono)}
+  .cols2{display:grid;grid-template-columns:1.35fr 1fr;gap:16px;margin-top:16px}
+  @media(max-width:820px){.cols2{grid-template-columns:1fr}}
+  .prank{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:12px}
+  @media(max-width:600px){.prank{grid-template-columns:repeat(3,1fr)}}
+  .prank .p{position:relative}
+  .prank .ph{aspect-ratio:1;border-radius:10px;overflow:hidden;background:var(--soft);border:1px solid var(--line)}.prank .ph img{width:100%;height:100%;object-fit:cover}
+  .prank .rk{position:absolute;top:5px;left:5px;background:var(--blue);color:#fff;font-size:10px;font-weight:800;border-radius:5px;padding:1px 6px;font-family:var(--mono)}
+  .prank .nm{font-size:10.5px;color:var(--mut);margin-top:5px;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .prank .pr{font-size:11px;font-weight:800;color:var(--blue)}
+  .pxlist{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+  .pxlist .px{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;background:var(--soft);border:1px solid var(--line);border-radius:9px;padding:8px 10px}
+  .pxlist .px .dot{width:7px;height:7px;border-radius:50%;background:var(--blue);flex:0 0 7px}
 </style>
 </head>
 <body>
@@ -237,7 +260,7 @@
       <a class="soon"><span class="i">✉️</span> Emails <span class="tag s">soon</span></a>
     </div>
     <div class="cta">⚡ Choisir un plan</div>
-    <div style="font-size:10px;color:var(--side-mut);padding:2px 10px 6px;font-family:var(--mono)">build 2507·9 — shop analytics</div>
+    <div style="font-size:10px;color:var(--side-mut);padding:2px 10px 6px;font-family:var(--mono)">build 2507·10 — faithful</div>
     <div class="side-foot"><span class="av">H</span><div class="u"><b>heuss</b><span>laibhossame1@gmail.com</span></div></div>
   </aside>
 
@@ -518,24 +541,35 @@ function showStore(i){
     <div class="shead"><div class="fav">${s.logo?`<img src="${s.logo}" onerror="this.parentElement.textContent='${esc(s.name.slice(0,2))}'">`:esc(s.name.slice(0,2))}</div>
       <div><h1>${esc(s.name)}</h1><div class="chips">
         <span class="chip mono">${s.domain}</span>${(s.category||[]).slice(0,2).map(c=>`<span class="chip">${esc(c)}</span>`).join('')}
-        ${s.launch_year?`<span class="chip">depuis ${s.launch_year}</span>`:''}<span class="chip">Shopify</span>
-        ${s.trustpilot_score?`<span class="chip">★ ${s.trustpilot_score}</span>`:''}
         ${s.global_rank?`<span class="chip">rang mondial #${fmt(s.global_rank)}</span>`:''}</div></div></div>
+    <div class="subbar">
+      <span>🌐 ${s.domain}</span>
+      <span>🗓 ${s.creation_date||''} · ${yearsAgo(s.launch_year)}</span>
+      <span>${flag(s.main_market)} ${s.main_market||''}</span>
+      ${s.language?`<span>🗣 ${esc(s.language)}</span>`:''}
+      ${s.currency?`<span>💲 ${esc(s.currency)}</span>`:''}
+      ${s.theme?`<span>🎨 ${esc(s.theme)}</span>`:''}
+      <span>🛍 Shopify</span>
+    </div>
     <div class="tabs">
-      <button class="on" data-t="ov" onclick="tab(this)">Vue d'ensemble</button>
+      <button class="on" data-t="ov" onclick="tab(this)">Shop Analytics</button>
       ${(s.ads||[]).length?`<button data-t="ads" onclick="tab(this)">Publicités Meta <b>${adsN}</b></button>`:''}
       ${(s.products||[]).length?'<button data-t="pr" onclick="tab(this)">Produits</button>':''}
       <button class="soon-tab" disabled>Shops similaires</button></div>
     <div data-p="ov">
-      <div class="kpirow">
-        <div class="stat"><div class="v g">${fmt(s.traffic_number)}${chgTxt}</div><div class="l">visites / mois</div></div>
-        <div class="stat"><div class="v b">${adsN}</div><div class="l">ads actives</div></div>
-        <div class="stat"><div class="v">${fmt(s.products_count)}</div><div class="l">produits</div></div>
-        <div class="stat"><div class="v">${s.trustpilot_score?'★ '+s.trustpilot_score:'—'}</div><div class="l">Trustpilot${s.trustpilot_reviews?' · '+fmt(s.trustpilot_reviews)+' avis':''}</div></div>
+      <div class="cards3">
+        <div class="card3"><div class="c3-t">Visites mensuelles</div><div class="c3-v" style="color:var(--gn)">${fmt(s.traffic_number)}${chgTxt}</div></div>
+        <div class="card3"><div class="c3-t">Trustpilot</div><div class="c3-v"><span class="stars">${stars(s.trustpilot_score)}</span> ${s.trustpilot_score||'—'} <span class="c3-sub">${s.trustpilot_reviews?fmt(s.trustpilot_reviews)+' avis':''}</span></div></div>
+        <div class="card3"><div class="c3-t">Réseaux sociaux (trafic)</div>${(s.socials&&s.socials.length)?`<div class="socs">${s.socials.map(x=>`<div class="s"><span class="n">${esc(x.name)}</span><span class="p">${Math.round((x.share||0)*100)}%</span></div>`).join('')}</div>`:'<div class="c3-sub">—</div>'}</div>
       </div>
       <div class="cols">
         <div class="card"><div class="chart-head"><h2>📈 Trafic dans le temps</h2>${rangeToggle('traffic')}</div><div id="chart-traffic">${trafficChart(s)}</div>${countryRow('Pays visiteurs',s.visitor_countries)}</div>
         <div class="card"><div class="chart-head"><h2>🎯 Ads actives dans le temps</h2>${rangeToggle('ads')}</div><div id="chart-ads">${adsChart(s)}</div>${countryRow('Pays ciblés',targetedShares(s.targeted_countries))}</div>
+      </div>
+      <div class="cols2">
+        <div class="card"><div class="chart-head"><h2>📦 Produits <b style="color:var(--blue)">${fmt(s.products_count)}</b></h2><span class="dim mono" style="font-size:11px">meilleures ventes</span></div>
+          <div class="prank">${(s.products||[]).slice(0,5).map((p,pi)=>`<div class="p"><div class="ph"><span class="rk">#${pi+1}</span>${p.image?`<img src="${p.image}" loading="lazy">`:''}</div><div class="nm">${esc(p.title)}</div><div class="pr">${p.price?Math.round(p.price)+(s.currency==='EUR'?'€':'$'):''}</div></div>`).join('')}</div></div>
+        <div class="card"><div class="chart-head"><h2>🧩 Technologies</h2><div class="rtoggle" id="pxtoggle"><button class="on" onclick="setPx('pixels',this)">Pixels</button><button onclick="setPx('apps',this)">Apps</button></div></div><div id="pxpanel">${pxPanel(s,'pixels')}</div></div>
       </div>
     </div>
     <div data-p="ads" class="hidden">${(s.ads||[]).length?`<div class="section-t">🎯 ${adsN} publicités Meta — ${esc(s.name)}</div><div class="masonry">${s.ads.map((a,ai)=>adCard(a,`onclick="openAd(${ai})"`)).join('')}</div>`:''}</div>
@@ -555,6 +589,9 @@ function areaSVG(vals,labels,color){const W=560,H=168,pad=10,mn=Math.min(...vals
   return `<svg class="bchart" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none"><defs><linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${color}" stop-opacity=".22"/><stop offset="1" stop-color="${color}" stop-opacity="0"/></linearGradient></defs><path d="${d} L${x(vals.length-1)} ${H-22} L${x(0)} ${H-22} Z" fill="url(#${gid})"/><path d="${d}" fill="none" stroke="${color}" stroke-width="2"/><text class="cx" x="${pad}" y="13">max ${fmt(mx)}</text><text class="cx" x="${pad}" y="${H-6}">${labels[0]||''}</text><text class="cx" x="${W-pad}" y="${H-6}" text-anchor="end">${labels[labels.length-1]||''}</text></svg>`;}
 function countryRow(t,list){if(!list||!list.length)return '';return `<div class="crow"><span class="crow-t">${t}</span><div class="crow-f">${list.slice(0,6).map(x=>`<span>${flag(x.cc)} ${Math.round((x.share||0)*100)}%</span>`).join('')}</div></div>`;}
 function targetedShares(t){const e=Object.entries(t||{});const tot=e.reduce((a,[,v])=>a+v,0)||1;return e.sort((a,b)=>b[1]-a[1]).slice(0,6).map(([cc,v])=>({cc,share:v/tot}));}
+function stars(sc){const n=Math.round(sc||0);return '★'.repeat(Math.max(0,Math.min(5,n)))+'☆'.repeat(Math.max(0,5-n));}
+function pxPanel(s,which){const list=(which==='apps'?s.apps:s.pixels)||[];return list.length?`<div class="pxlist">${list.map(x=>`<div class="px"><span class="dot"></span>${esc(x)}</div>`).join('')}</div>`:'<div class="c3-sub" style="padding:14px 0">—</div>';}
+function setPx(which,btn){document.getElementById('pxpanel').innerHTML=pxPanel(window.CURSTORE,which);btn.parentElement.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b===btn));}
 function tab(b){const r=document.getElementById('view-detail');r.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));r.querySelectorAll('[data-p]').forEach(p=>p.classList.toggle('hidden',p.getAttribute('data-p')!==b.dataset.t));window.scrollTo(0,0);}
 function lastMonths(o,n){const k=Object.keys(o||{}).sort().slice(-n),x={};k.forEach(m=>x[m.slice(2)]=o[m]);return x;}
 function bars(o,fl){const e=Object.entries(o||{}).sort((a,b)=>b[1]-a[1]).slice(0,8),mx=Math.max(...e.map(x=>x[1]),1);
