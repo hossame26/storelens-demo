@@ -122,6 +122,12 @@
   .plat{display:flex;gap:6px;background:var(--soft);border:1px solid var(--line);border-radius:11px;padding:4px}
   .plat button{border:none;background:none;font-weight:700;font-size:13.5px;color:var(--mut);padding:7px 13px;border-radius:8px;cursor:pointer}
   .plat button.on{background:#fff;color:var(--tx);box-shadow:var(--sh)}
+  .soon-b{margin-left:6px;font-size:9px;font-weight:700;color:var(--mut);background:var(--soft);border:1px solid var(--line);border-radius:5px;padding:1px 5px}
+  .plat button.on .soon-b{background:var(--blue-bg);color:var(--blue);border-color:transparent}
+  .soon-panel{text-align:center;max-width:470px;margin:56px auto;display:flex;flex-direction:column;align-items:center;gap:15px}
+  .soon-panel .ico{width:66px;height:66px;border-radius:18px;background:var(--soft);border:1px solid var(--line);display:grid;place-items:center;font-size:28px;font-weight:800;color:var(--blue)}
+  .soon-panel h3{font-size:20px;margin:0;font-weight:800}
+  .soon-panel p{color:var(--mut);font-size:14px;margin:0;line-height:1.55}
   .masonry{columns:4;column-gap:16px}
   @media(max-width:1250px){.masonry{columns:3}}@media(max-width:820px){.masonry{columns:2}}@media(max-width:520px){.masonry{columns:1}}
   .adc{break-inside:avoid;margin-bottom:16px;border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:var(--sh);background:#fff;cursor:pointer;transition:.16s}
@@ -214,7 +220,7 @@
       <a class="soon"><span class="i">✉️</span> Emails <span class="tag s">soon</span></a>
     </div>
     <div class="cta">⚡ Choisir un plan</div>
-    <div style="font-size:10px;color:var(--side-mut);padding:2px 10px 6px;font-family:var(--mono)">build 2507·5 — polish</div>
+    <div style="font-size:10px;color:var(--side-mut);padding:2px 10px 6px;font-family:var(--mono)">build 2507·6 — platforms</div>
     <div class="side-foot"><span class="av">H</span><div class="u"><b>heuss</b><span>laibhossame1@gmail.com</span></div></div>
   </aside>
 
@@ -233,11 +239,18 @@
         <div class="empty hidden" id="shopEmpty">Aucune boutique ne correspond.</div>
       </div>
       <div id="view-ads" class="hidden">
-        <div style="display:flex;gap:12px;align-items:center;margin-bottom:14px"><div class="plat"><button class="on">Ⓜ Meta</button><button>♪ TikTok</button><button>G Google</button></div><span class="count">+358M</span></div>
-        <div class="filters" id="filtersAds"></div>
-        <div class="toolbar"><div class="fwrap"><div class="fpill" id="sortPillAds" onclick="toggleMenu('sortAds',this)">↓ <span id="sortLabelAds">Pertinence</span> <span class="c">▾</span></div></div><span class="mut" id="adResCount" style="font-size:13px"></span></div>
-        <div class="masonry" id="adsMasonry"></div>
-        <div class="empty hidden" id="adsEmpty">Aucune pub ne correspond.</div>
+        <div style="display:flex;gap:12px;align-items:center;margin-bottom:14px"><div class="plat">
+          <button class="on" id="plat-meta" onclick="setPlatform('meta')">Ⓜ Meta</button>
+          <button id="plat-tiktok" onclick="setPlatform('tiktok')">♪ TikTok<span class="soon-b">soon</span></button>
+          <button id="plat-google" onclick="setPlatform('google')">G Google<span class="soon-b">soon</span></button>
+        </div><span class="count" id="platCount">+358M</span></div>
+        <div id="adsMain">
+          <div class="filters" id="filtersAds"></div>
+          <div class="toolbar"><div class="fwrap"><div class="fpill" id="sortPillAds" onclick="toggleMenu('sortAds',this)">↓ <span id="sortLabelAds">Pertinence</span> <span class="c">▾</span></div></div><span class="mut" id="adResCount" style="font-size:13px"></span></div>
+          <div class="masonry" id="adsMasonry"></div>
+          <div class="empty hidden" id="adsEmpty">Aucune pub ne correspond.</div>
+        </div>
+        <div id="adsSoon" class="hidden"></div>
       </div>
       <div id="view-detail" class="hidden"></div>
     </div>
@@ -272,6 +285,7 @@ function go(v){VIEW=v;['boutiques','ads','detail'].forEach(x=>document.getElemen
   document.getElementById('hdTitle').textContent=t;
   document.getElementById('hdCount').textContent=v==='boutiques'?'1.9M':(v==='ads'?'358M':'');
   document.getElementById('hdCount').style.display=t?'':'none';
+  if(v==='ads')setPlatform('meta');
   closeMenus();window.scrollTo(0,0);}
 
 function onSearch(v){S.search=v.toLowerCase().trim(); if(VIEW==='ads')renderAds(); else {if(VIEW==='detail')go('boutiques'); renderShops();}}
@@ -385,6 +399,18 @@ function adCard(a,click=''){
       ${a.cta?`<div class="cta">${esc(a.cta)} ↗</div>`:''}
     </div>
   </div>`;
+}
+function setPlatform(p){
+  document.querySelectorAll('.plat button').forEach(b=>b.classList.toggle('on',b.id==='plat-'+p));
+  const isMeta=p==='meta';
+  document.getElementById('adsMain').classList.toggle('hidden',!isMeta);
+  document.getElementById('platCount').textContent=isMeta?'+358M':'bientôt';
+  const soon=document.getElementById('adsSoon'); soon.classList.toggle('hidden',isMeta);
+  if(!isMeta){
+    const name=p==='tiktok'?'TikTok':'Google', ico=p==='tiktok'?'♪':'G';
+    const src=p==='tiktok'?'TikTok Creative Center':'Google Ads Transparency Center';
+    soon.innerHTML=`<div class="soon-panel"><div class="ico">${ico}</div><h3>Publicités ${name} — bientôt</h3><p>Le moteur storelens ingère d'abord <b>Meta</b> (357M pubs). L'ingestion <b>${src}</b> est en cours de branchement.</p><button class="mi-btn primary" style="max-width:230px" onclick="setPlatform('meta')">← Voir les pubs Meta</button></div>`;
+  }
 }
 function openAd(i){showAdModal(window.ADS[i]);}
 function openCrea(i){const c=window.CREAS[i],s=window.CURSTORE;showAdModal({page_name:s.name,avatar:s.logo,video:c.video,full:c.full,thumb:c.thumb,media_type:c.media_type,is_active:true,body:'',start_date:null,days_running:null});}
