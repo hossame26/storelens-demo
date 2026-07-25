@@ -3,6 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
 <title>storelens — e-com spy</title>
 <style>
   :root{
@@ -227,7 +229,7 @@ const ADSORTS={relevance:["Pertinence",null],recent:["Plus récentes",(a,b)=>(b.
   scaling:["Scaling",(a,b)=>(b.collation_count||0)-(a.collation_count||0)],longest:["Longévité",(a,b)=>(b.days_running||0)-(a.days_running||0)]};
 const QTABS=[["all","🌍 Toutes","relevance"],["gems","💎 Weekly Gems","trustpilot"],["scaling","📈 Top Scaling","growth"],["leaders","🏆 Market Leaders","monthlyVisits"],["peak","🔥 Ad Peak","activeAds"]];
 
-fetch("data/demo.json?v=7").then(r=>r.json()).then(d=>{DATA=d;initFilters();renderShops();renderAds();})
+fetch("data/demo.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.json()).then(d=>{DATA=d;initFilters();renderShops();renderAds();})
   .catch(e=>{document.getElementById('shopTable').innerHTML='<div class="empty">Erreur data/demo.json</div>';});
 
 function go(v){VIEW=v;['boutiques','ads','detail'].forEach(x=>document.getElementById('view-'+x).classList.add('hidden'));
