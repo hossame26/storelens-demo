@@ -212,6 +212,15 @@
   .lk-shot{border-radius:16px;overflow:hidden;border:1px solid var(--line);box-shadow:var(--sh);background:var(--soft);aspect-ratio:16/10}
   .lk-shot img{width:100%;height:100%;object-fit:cover;object-position:top}
   .lk-meta{display:flex;flex-direction:column;justify-content:center}
+  .gads{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  @media(max-width:1050px){.gads{grid-template-columns:repeat(3,1fr)}}@media(max-width:720px){.gads{grid-template-columns:1fr 1fr}}
+  .gad{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff;box-shadow:var(--sh);transition:.16s}
+  .gad:hover{transform:translateY(-3px);box-shadow:var(--sh2)}
+  .gad .gimg{background:var(--soft);display:grid;place-items:center;padding:10px;min-height:150px}
+  .gad .gimg img{max-width:100%;max-height:230px;object-fit:contain}
+  .gad .gb{padding:10px 12px;border-top:1px solid var(--line)}
+  .gad .gtag{display:inline-block;font-size:9.5px;font-weight:700;color:#1a73e8;background:#eaf1ff;border-radius:5px;padding:1px 7px;margin-bottom:6px}
+  .gad .gadv{font-weight:750;font-size:13px}.gad .gd{font-size:11px;color:var(--mut);font-family:var(--mono);margin-top:3px}
   .chart-head{display:flex;justify-content:space-between;align-items:center;gap:10px}
   .rtoggle{display:flex;gap:2px;background:var(--soft);border:1px solid var(--line);border-radius:9px;padding:2px}
   .rtoggle button{border:none;background:none;font-size:11px;font-weight:700;color:var(--mut);padding:5px 11px;border-radius:7px;cursor:pointer;font-family:inherit}
@@ -260,7 +269,7 @@
       <a class="soon"><span class="i">✉️</span> Emails <span class="tag s">soon</span></a>
     </div>
     <div class="cta">⚡ Choisir un plan</div>
-    <div style="font-size:10px;color:var(--side-mut);padding:2px 10px 6px;font-family:var(--mono)">build 2507·11 — LIVE search</div>
+    <div style="font-size:10px;color:var(--side-mut);padding:2px 10px 6px;font-family:var(--mono)">build 2507·12 — Google Ads</div>
     <div class="side-foot"><span class="av">H</span><div class="u"><b>heuss</b><span>laibhossame1@gmail.com</span></div></div>
   </aside>
 
@@ -453,6 +462,7 @@ function setPlatform(p){
     soon.innerHTML=`<div class="soon-panel"><div class="ico">${ico}</div><h3>Publicités ${name} — bientôt</h3><p>Le moteur storelens ingère d'abord <b>Meta</b> (357M pubs). L'ingestion <b>${src}</b> est en cours de branchement.</p><button class="mi-btn primary" style="max-width:230px" onclick="setPlatform('meta')">← Voir les pubs Meta</button></div>`;
   }
 }
+function googleAdCard(a){return `<div class="gad"><div class="gimg"><img src="${a.image}" loading="lazy" referrerpolicy="no-referrer" onerror="this.closest('.gad').style.display='none'"></div><div class="gb"><span class="gtag">Google · Display</span><div class="gadv">${esc(a.advertiser||'')}</div><div class="gd">${a.first_shown||''}${a.last_shown&&a.last_shown!==a.first_shown?' → '+a.last_shown:''}</div></div></div>`;}
 function openAd(i){showAdModal(window.ADS[i]);}
 function openCrea(i){const c=window.CREAS[i],s=window.CURSTORE;showAdModal({page_name:s.name,avatar:s.logo,video:c.video,full:c.full,thumb:c.thumb,media_type:c.media_type,is_active:true,
   body:'Dernière créative Meta de '+s.name+'.'+(s.category&&s.category.length?' Niche : '+s.category.join(' · ')+'.':''),
@@ -534,6 +544,7 @@ function showStore(i){
     <div class="tabs">
       <button class="on" data-t="ov" onclick="tab(this)">Shop Analytics</button>
       ${(s.ads||[]).length?`<button data-t="ads" onclick="tab(this)">Publicités Meta <b>${adsN}</b></button>`:''}
+      ${(s.google_ads||[]).length?`<button data-t="gads" onclick="tab(this)">Google Ads <b>${fmt(s.google_ads.length)}</b></button>`:''}
       ${(s.products||[]).length?'<button data-t="pr" onclick="tab(this)">Produits</button>':''}
       <button class="soon-tab" disabled>Shops similaires</button></div>
     <div data-p="ov">
@@ -553,6 +564,7 @@ function showStore(i){
       </div>
     </div>
     <div data-p="ads" class="hidden">${(s.ads||[]).length?`<div class="section-t">🎯 ${adsN} publicités Meta — ${esc(s.name)}</div><div class="masonry">${s.ads.map((a,ai)=>adCard(a,`onclick="openAd(${ai})"`)).join('')}</div>`:''}</div>
+    <div data-p="gads" class="hidden">${(s.google_ads||[]).length?`<div class="section-t">🔍 ${fmt(s.google_ads.length)} publicités Google — ${esc(s.name)}</div><div class="gads">${s.google_ads.map(googleAdCard).join('')}</div>`:''}</div>
     <div data-p="pr" class="hidden"><div class="section-t">📦 Best-sellers</div><div class="prods">${(s.products||[]).map(p=>`<div class="prod"><div class="ph">${p.image?`<img src="${p.image}" loading="lazy">`:''}</div><div class="t">${esc(p.title)}</div><div class="p">${p.price?Math.round(p.price)+(s.currency==='EUR'?'€':'$'):''}</div></div>`).join('')}</div></div>`;
   window.scrollTo(0,0);
 }
