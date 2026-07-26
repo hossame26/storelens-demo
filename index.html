@@ -260,7 +260,7 @@
       <a class="soon"><span class="i">✉️</span> Emails <span class="tag s">soon</span></a>
     </div>
     <div class="cta">⚡ Choisir un plan</div>
-    <div style="font-size:10px;color:var(--side-mut);padding:2px 10px 6px;font-family:var(--mono)">build 2507·10 — faithful</div>
+    <div style="font-size:10px;color:var(--side-mut);padding:2px 10px 6px;font-family:var(--mono)">build 2507·11 — LIVE search</div>
     <div class="side-foot"><span class="av">H</span><div class="u"><b>heuss</b><span>laibhossame1@gmail.com</span></div></div>
   </aside>
 
@@ -494,42 +494,22 @@ function doLookup(raw){
   document.getElementById('searchInput').blur();
   go('detail');
   document.getElementById('view-detail').innerHTML=`<div class="back" onclick="go('boutiques')">← toutes les boutiques</div>
-    <div class="lookup-load"><div class="spin"></div><div>Analyse de <b>${esc(domain)}</b> — détection Shopify + catalogue…</div></div>`;
+    <div class="lookup-load"><div class="spin"></div><div>Analyse LIVE de <b>${esc(domain)}</b> — Shopify · trafic · pubs · pays…</div></div>`;
   fetch(API_BASE+'/api/lookup?domain='+encodeURIComponent(domain),{cache:'no-store'})
-    .then(r=>r.json()).then(d=>renderLookup(d,domain)).catch(()=>renderLookup({found:false,error:'network'},domain));
+    .then(r=>r.json()).then(d=>{
+      if(!d||!d.found){renderNotFound(domain,d);return;}
+      d.logo=d.favicon;
+      // inject the live result as a store and render the FULL rich detail (same as pre-loaded)
+      const existing=DATA.stores.findIndex(x=>x.domain===d.domain);
+      let idx; if(existing>=0){DATA.stores[existing]=d;idx=existing;} else {idx=DATA.stores.push(d)-1;}
+      showStore(idx);
+    }).catch(()=>renderNotFound(domain,{error:'network'}));
 }
-function renderLookup(d,domain){
-  const det=document.getElementById('view-detail');
-  if(!d||!d.is_shopify){
-    det.innerHTML=`<div class="back" onclick="go('boutiques')">← toutes les boutiques</div>
-      <div class="soon-panel"><div class="ico">🔍</div><h3>${esc(domain)}</h3>
-      <p>${d&&d.error?'Erreur réseau — réessaie dans un instant.':"Ce site n'est pas détecté comme Shopify (pas de catalogue <code>/products.json</code> public)."}</p>
-      <button class="mi-btn primary" style="max-width:250px" onclick="go('boutiques');setTimeout(()=>document.getElementById('searchInput').focus(),50)">← Chercher un autre site</button></div>`;
-    return;
-  }
-  const months=d.launches_per_month||{}, prods=d.newest||d.catalog||[];
-  det.innerHTML=`
-    <div class="back" onclick="go('boutiques')">← toutes les boutiques</div>
-    <div class="lk-hero">
-      <div class="lk-shot">${d.screenshot_url?`<img src="${d.screenshot_url}" loading="lazy" onerror="this.parentElement.style.display='none'">`:''}</div>
-      <div class="lk-meta">
-        <div class="shead" style="margin-bottom:14px"><div class="fav">${d.favicon?`<img src="${d.favicon}" onerror="this.replaceWith(document.createTextNode('${esc((d.name||'?').slice(0,2))}'))">`:esc((d.name||'?').slice(0,2))}</div>
-          <div><h1>${esc(d.name)}</h1><div class="chips">
-            <span class="chip mono">${esc(d.domain)}</span>
-            <span class="chip live">✓ Shopify confirmé</span>
-            ${d.launch_year?`<span class="chip">depuis ${d.launch_year}</span>`:''}
-            ${(d.top_types||[]).slice(0,2).map(t=>t?`<span class="chip">${esc(t)}</span>`:'').join('')}
-          </div></div></div>
-        <div class="kpirow" style="grid-template-columns:1fr 1fr;margin-bottom:0">
-          <div class="stat"><div class="v b">${fmt(d.products_count)}${d.has_more?'+':''}</div><div class="l">produits</div></div>
-          <div class="stat"><div class="v">${d.launch_year||'—'}</div><div class="l">en ligne depuis</div></div>
-        </div>
-      </div>
-    </div>
-    <div class="card" style="margin-top:16px"><h2>🚀 Lancements produits / mois</h2>${Object.keys(months).length?bars(lastMonths(months,12)):'<p class="mut" style="font-size:13.5px">Historique indisponible.</p>'}</div>
-    <div class="section-t">📦 Derniers produits mis en ligne</div>
-    <div class="prods">${prods.map(p=>`<div class="prod"><div class="ph">${p.image?`<img src="${p.image}" loading="lazy">`:''}</div><div class="t">${esc(p.title)}</div><div class="p">${p.price?Math.round(p.price)+'$':''}</div></div>`).join('')}</div>`;
-  window.scrollTo(0,0);
+function renderNotFound(domain,d){
+  document.getElementById('view-detail').innerHTML=`<div class="back" onclick="go('boutiques')">← toutes les boutiques</div>
+    <div class="soon-panel"><div class="ico">🔍</div><h3>${esc(domain)}</h3>
+    <p>${d&&d.error?'Erreur réseau — réessaie dans un instant.':"Site non détecté (ni Shopify, ni présent dans la base). Essaie un domaine e-commerce."}</p>
+    <button class="mi-btn primary" style="max-width:250px" onclick="go('boutiques');setTimeout(()=>document.getElementById('searchInput').focus(),50)">← Chercher un autre site</button></div>`;
 }
 
 function showStore(i){
